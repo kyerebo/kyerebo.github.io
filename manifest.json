@@ -1,0 +1,21 @@
+{
+  "name": "kyerebo.github.io",
+  "short_name": "kyerebo.github.io",
+  "description": "A sample Progressive Web App demonstrating the application-title meta tag.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#336699",
+  "icons": [
+    {
+      "src": "/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>My Sample PWA</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Custom title for the installed app -->
+  <meta name="application-title" content="This is the application-title!">
+
+  <!-- Theme color for UI -->
+  <meta name="theme-color" content="#336699">
+</head>
+<body>
+  <h1>Welcome to Alex's test PWA!</h1>
+  <p>This PWA demonstrates the use of <code>application-title</code> meta tag.</p>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</body>
+</html>
