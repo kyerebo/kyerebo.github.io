@@ -1,21 +1,87 @@
 {
+  "lang": "en",
+  "dir": "ltr",
+
   "name": "kyerebo.github.io",
+  "name_localized": {
+    "en": { "value": "Kyerebo (English)", "lang": "en", "dir": "ltr" },
+    "de": { "value": "Kyerebo (Deutsch)", "lang": "de", "dir": "ltr" },
+    "ar": { "value": "كيريبو (العربية)", "lang": "ar", "dir": "rtl" }
+  },
+
   "short_name": "kyerebo.github.io",
+  "short_name_localized": {
+    "en": { "value": "Kyerebo", "lang": "en", "dir": "ltr" },
+    "de": { "value": "Kyerebo", "lang": "de", "dir": "ltr" },
+    "ar": { "value": "كيريبو", "lang": "ar", "dir": "rtl" }
+  },
+
   "description": "A sample Progressive Web App demonstrating the application-title meta tag.",
+  "description_localized": {
+    "en": { "value": "Sample PWA showing localized manifest fields.", "lang": "en", "dir": "ltr" },
+    "de": { "value": "Beispiel-PWA mit lokalisierten Manifestfeldern.", "lang": "de", "dir": "ltr" },
+    "ar": { "value": "تطبيق ويب تقدّمي يعرض حقول بيان مترجمة.", "lang": "ar", "dir": "rtl" }
+  },
+
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#336699",
+
   "icons": [
+    { "src": "/icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "/icons/icon-256.png", "sizes": "256x256", "type": "image/png" }
+  ],
+  "icons_localized": {
+    "en": [
+      { "src": "/icons/en/icon-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "/icons/en/icon-256.png", "sizes": "256x256", "type": "image/png" }
+    ],
+    "de": [
+      { "src": "/icons/de/icon-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "/icons/de/icon-256.png", "sizes": "256x256", "type": "image/png" }
+    ],
+    "ar": [
+      { "src": "/icons/ar/icon-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "/icons/ar/icon-256.png", "sizes": "256x256", "type": "image/png" }
+    ]
+  },
+
+  "shortcuts": [
     {
-      "src": "/icons/icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/icon-256.png",
-      "sizes": "256x256",
-      "type": "image/png"
+      "name": "Open Dashboard",
+      "name_localized": {
+        "en": { "value": "Open Dashboard", "lang": "en", "dir": "ltr" },
+        "de": { "value": "Dashboard öffnen", "lang": "de", "dir": "ltr" },
+        "ar": { "value": "فتح لوحة المعلومات", "lang": "ar", "dir": "rtl" }
+      },
+      "short_name": "Dashboard",
+      "short_name_localized": {
+        "en": { "value": "Dashboard", "lang": "en", "dir": "ltr" },
+        "de": { "value": "Dashboard", "lang": "de", "dir": "ltr" },
+        "ar": { "value": "لوحة", "lang": "ar", "dir": "rtl" }
+      },
+      "description": "Go to your dashboard.",
+      "description_localized": {
+        "en": { "value": "Go to your dashboard.", "lang": "en", "dir": "ltr" },
+        "de": { "value": "Zum Dashboard wechseln.", "lang": "de", "dir": "ltr" },
+        "ar": { "value": "انتقل إلى لوحتك.", "lang": "ar", "dir": "rtl" }
+      },
+      "url": "/dashboard",
+      "icons": [
+        { "src": "/icons/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+      ],
+      "icons_localized": {
+        "en": [
+          { "src": "/icons/en/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+        ],
+        "de": [
+          { "src": "/icons/de/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+        ],
+        "ar": [
+          { "src": "/icons/ar/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+        ]
+      }
     }
   ]
 }
