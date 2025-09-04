@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>My Sample PWA</title>
+  <title>My AccentColor</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <!-- PWA manifest -->
@@ -13,15 +13,87 @@
 
   <!-- Theme color for UI -->
   <meta name="theme-color" content="#336699">
+
+  <style>
+    body {
+      font-family: sans-serif;
+      display: grid;
+      gap: 2rem;
+      padding: 2rem;
+    }
+  
+    .section {
+      border: 2px solid #ccc;
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+  
+    .accent-div {
+      background-color: AccentColor;
+      color: AccentColorText;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+</style>
 </head>
 <body>
-  <h1>Welcome to Alex's test PWA!</h1>
-  <p>This PWA demonstrates the use of <code>application-title</code> meta tag.</p>
+<div class="section" style="accent-color: red;">
+  <h2>Section 1: accent-color: red</h2>
+  <form>
+    <label><input type="checkbox"> Checkbox</label>
+    <label><input type="radio" name="r1"> Radio 1</label>
+    <label><input type="radio" name="r1"> Radio 2</label>
+    <input type="range">
+    <input type="color">
+  </form>
+  <div class="accent-div">This text uses AccentColorText and background uses AccentColor.</div>
+</div>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
-    }
-  </script>
+<div class="section" style="accent-color: auto;">
+  <h2>Section 2: accent-color: auto</h2>
+  <form>
+    <label><input type="checkbox"> Checkbox</label>
+    <label><input type="radio" name="r2"> Radio 1</label>
+    <label><input type="radio" name="r2"> Radio 2</label>
+    <input type="range">
+    <input type="color">
+  </form>
+  <div class="accent-div">This text uses AccentColorText and background uses AccentColor.</div>
+</div>
+
+<div class="section" id="dynamic-section">
+  <h2>Section 3: accent-color set dynamically</h2>
+  <label for="dynamic-picker">Pick an accent color:</label>
+  <input type="color" id="dynamic-picker" value="#0000ff">
+
+  <form>
+    <label><input type="checkbox"> Checkbox</label>
+    <label><input type="radio" name="r3"> Radio 1</label>
+    <label><input type="radio" name="r3"> Radio 2</label>
+    <input type="range">
+    <input type="color">
+  </form>
+  <div class="accent-div">This text uses AccentColorText and background uses AccentColor.</div>
+</div>
+
+<script>
+  const dynamicSection = document.getElementById("dynamic-section");
+  const picker = document.getElementById("dynamic-picker");
+
+  // Set initial accent color based on the default picker value
+  dynamicSection.style.accentColor = picker.value;
+
+  picker.addEventListener("input", () => {
+    dynamicSection.style.accentColor = picker.value;
+  });
+</script>
 </body>
 </html>
+
