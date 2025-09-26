@@ -81,7 +81,19 @@
         "ar": [
           { "src": "/icons/ar/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
         ]
-      }
+      },
+       "related_applications": [
+        {
+          "platform": "play",
+          "url": "https://play.google.com/store/apps/details?id=com.example.app",
+          "id": "com.example.app"
+        },
+        {
+          "platform": "itunes",
+          "url": "https://itunes.apple.com/app/example-app/id123456789"
+        }
+      ],
     }
   ]
 }
+
