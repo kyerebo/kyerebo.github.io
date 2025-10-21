@@ -9,7 +9,7 @@
     "ar": { "value": "كيريبو (العربية)", "lang": "ar", "dir": "rtl" }
   },
 
-  "short_name": "kyerebo.github.io",
+  "short_name": "Kyerebo",
   "short_name_localized": {
     "en": { "value": "Kyerebo", "lang": "en", "dir": "ltr" },
     "de": { "value": "Kyerebo", "lang": "de", "dir": "ltr" },
@@ -23,27 +23,33 @@
     "ar": { "value": "تطبيق ويب تقدّمي يعرض حقول بيان مترجمة.", "lang": "ar", "dir": "rtl" }
   },
 
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
   "theme_color": "#336699",
+  "categories": ["testing", "developer-tools"],
 
   "icons": [
-    { "src": "/icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
-    { "src": "/icons/icon-256.png", "sizes": "256x256", "type": "image/png" }
+    { "src": "./icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icons/icon-256.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ],
+
   "icons_localized": {
     "en": [
-      { "src": "/icons/en/icon-128.png", "sizes": "128x128", "type": "image/png" },
-      { "src": "/icons/en/icon-256.png", "sizes": "256x256", "type": "image/png" }
+      { "src": "./icons/en/icon-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "./icons/en/icon-192.png", "sizes": "192x192", "type": "image/png" }
     ],
     "de": [
-      { "src": "/icons/de/icon-128.png", "sizes": "128x128", "type": "image/png" },
-      { "src": "/icons/de/icon-256.png", "sizes": "256x256", "type": "image/png" }
+      { "src": "./icons/de/icon-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "./icons/de/icon-192.png", "sizes": "192x192", "type": "image/png" }
     ],
     "ar": [
-      { "src": "/icons/ar/icon-128.png", "sizes": "128x128", "type": "image/png" },
-      { "src": "/icons/ar/icon-256.png", "sizes": "256x256", "type": "image/png" }
+      { "src": "./icons/ar/icon-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "./icons/ar/icon-192.png", "sizes": "192x192", "type": "image/png" }
     ]
   },
 
@@ -67,33 +73,34 @@
         "de": { "value": "Zum Dashboard wechseln.", "lang": "de", "dir": "ltr" },
         "ar": { "value": "انتقل إلى لوحتك.", "lang": "ar", "dir": "rtl" }
       },
-      "url": "/dashboard",
+      "url": "./dashboard",
       "icons": [
-        { "src": "/icons/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+        { "src": "./icons/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
       ],
       "icons_localized": {
         "en": [
-          { "src": "/icons/en/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+          { "src": "./icons/en/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
         ],
         "de": [
-          { "src": "/icons/de/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+          { "src": "./icons/de/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
         ],
         "ar": [
-          { "src": "/icons/ar/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+          { "src": "./icons/ar/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
         ]
-      },
-       "related_applications": [
-        {
-          "platform": "play",
-          "url": "https://play.google.com/store/apps/details?id=com.example.app",
-          "id": "com.example.app"
-        },
-        {
-          "platform": "itunes",
-          "url": "https://itunes.apple.com/app/example-app/id123456789"
-        }
-      ],
+      }
     }
-  ]
-}
+  ],
 
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.example.app",
+      "id": "com.example.app"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://itunes.apple.com/app/example-app/id123456789"
+    }
+  ],
+  "prefer_related_applications": false
+}
