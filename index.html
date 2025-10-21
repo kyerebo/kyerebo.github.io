@@ -47,8 +47,17 @@
       animation: pulseColor 2s infinite alternate;
     }
 
+    .animate-control {
+      animation: pulseControl 2s infinite alternate;
+    }
+
     @keyframes pulseColor {
       0% { background-color: AccentColor; }
+      100% { background-color: #ff00ff; }
+    }
+
+    @keyframes pulseControl {
+      0% { background-color: #00ffff; }
       100% { background-color: #ff00ff; }
     }
 
@@ -97,9 +106,15 @@
   </div>
 
   <div class="section">
-    <h2>Section 3: Animation Taint Test</h2>
+    <h2>Section 3: Control Animation (No AccentColor)</h2>
+    <div class="red-div animate-control" id="control-div">Animating #00ffff → #ff00ff (no AccentColor)</div>
+    <button onclick="queryColor('control-div')">Query mid-animation</button>
+  </div>
+
+  <div class="section">
+    <h2>Section 4: Animation Taint Test (AccentColor)</h2>
     <div class="accent-div animate" id="animated-div">Animating AccentColor → #ff00ff</div>
-    <button id="query-anim">Query mid-animation</button>
+    <button onclick="queryColor('animated-div')">Query mid-animation</button>
   </div>
 
   <div class="results" id="output">Results will appear here.</div>
@@ -116,11 +131,6 @@
         output.textContent = `${id}: Error (${err.message})`;
       }
     }
-
-    // Query while animation runs
-    document.getElementById('query-anim').addEventListener('click', () => {
-      queryColor('animated-div');
-    });
 
     // Register service worker (for installability)
     if ('serviceWorker' in navigator) {
