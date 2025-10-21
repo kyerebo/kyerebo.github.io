@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>My AccentColor</title>
+  <title>AccentColor Taint Test</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <link rel="manifest" href="/manifest.json">
-  <meta name="application-title" content="This is the application-title!">
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Theme color for UI -->
   <meta name="theme-color" content="#336699">
 
   <style>
@@ -15,12 +17,14 @@
       display: grid;
       gap: 2rem;
       padding: 2rem;
+      background-color: #f4f4f4;
     }
 
     .section {
       border: 2px solid #ccc;
       border-radius: 1rem;
       padding: 1rem;
+      background: #fff;
     }
 
     .accent-div {
@@ -29,77 +33,46 @@
       padding: 1rem;
       margin-top: 1rem;
       border-radius: 0.5rem;
+      transition: background-color 1s linear;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    /* Animation test */
-    @keyframes accentAnim {
-      0% { accent-color: red; }
-      50% { accent-color: AccentColor; }
-      100% { accent-color: green; }
-    }
-
-    .animating {
-      animation: accentAnim 5s linear infinite alternate;
-    }
-
-    .color-indicator {
-      width: 80px;
-      height: 40px;
+    .red-div {
+      background-color: red;
+      padding: 1rem;
+      margin-top: 1rem;
       border-radius: 0.5rem;
-      border: 2px solid #999;
-      margin-top: 1rem;
     }
 
-    .color-label {
-      font-size: 0.9rem;
-      color: #555;
-      margin-top: 0.25rem;
-      font-family: monospace;
+    .animate {
+      animation: pulseColor 2s infinite alternate;
     }
 
-    /* NEW: results table styling */
-    #results {
-      border-collapse: collapse;
-      margin-top: 1rem;
-      width: 100%;
-      font-family: monospace;
-      font-size: 0.9rem;
-    }
-    #results td, #results th {
-      border: 1px solid #ccc;
-      padding: 0.4rem 0.6rem;
-      text-align: left;
-    }
-    #results .swatch {
-      width: 40px;
-      height: 20px;
-      border: 1px solid #999;
-      border-radius: 4px;
-      display: inline-block;
+    @keyframes pulseColor {
+      0% { background-color: AccentColor; }
+      100% { background-color: #ff00ff; }
     }
 
-    #run-tests {
-      background: #333;
-      color: #fff;
+    button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
       border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 0.5rem;
+      background-color: #336699;
+      color: white;
       cursor: pointer;
-      font-weight: bold;
+    }
+
+    .results {
+      margin-top: 1rem;
+      font-family: monospace;
+      background: #eee;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
     }
   </style>
 </head>
 <body>
-  <!-- NEW: Run button for static tests -->
-  <button id="run-tests">Test Computed Styles (Static Sections)</button>
-
-  <div class="section" id="section1" style="accent-color: red;">
+  <div class="section" style="accent-color: red;">
     <h2>Section 1: accent-color: red</h2>
     <form>
       <label><input type="checkbox"> Checkbox</label>
@@ -107,156 +80,56 @@
       <label><input type="radio" name="r1"> Radio 2</label>
       <input type="range">
     </form>
-    <div class="accent-div">This text uses AccentColorText and background uses AccentColor.</div>
+    <div class="red-div" id="static-red">This text background is styled with red.</div>
+    <button onclick="queryColor('static-red')">Get Computed Color</button>
   </div>
 
-  <div class="section" id="section2" style="accent-color: auto;">
-    <h2>Section 2: accent-color: auto</h2>
+  <div class="section" style="accent-color: auto;">
+    <h2>Section 2: accent-color: auto (system)</h2>
     <form>
       <label><input type="checkbox"> Checkbox</label>
       <label><input type="radio" name="r2"> Radio 1</label>
       <label><input type="radio" name="r2"> Radio 2</label>
       <input type="range">
     </form>
-    <div class="accent-div">This text uses AccentColorText and background uses AccentColor.</div>
+    <div class="accent-div" id="system-auto">This text uses AccentColorText and background uses AccentColor.</div>
+    <button onclick="queryColor('system-auto')">Get Computed Color</button>
   </div>
 
-  <div class="section" id="dynamic-section">
-    <h2>Section 3: accent-color set dynamically</h2>
-    <label for="dynamic-picker">Pick an accent color:</label>
-    <input type="color" id="dynamic-picker" value="#0000ff">
-    <form>
-      <label><input type="checkbox"> Checkbox</label>
-      <label><input type="radio" name="r3"> Radio 1</label>
-      <label><input type="radio" name="r3"> Radio 2</label>
-      <input type="range">
-    </form>
-    <div class="accent-div">This text uses AccentColorText and background uses AccentColor.</div>
+  <div class="section">
+    <h2>Section 3: Animation Taint Test</h2>
+    <div class="accent-div animate" id="animated-div">Animating AccentColor → #ff00ff</div>
+    <button id="query-anim">Query mid-animation</button>
   </div>
 
-  <div class="section animating" id="anim-section">
-    <h2>Section 4: accent-color animation test</h2>
-    <form>
-      <label><input type="checkbox"> Checkbox</label>
-      <label><input type="radio" name="r4"> Radio 1</label>
-      <label><input type="radio" name="r4"> Radio 2</label>
-      <input type="range">
-    </form>
-    <div class="accent-div">This text uses AccentColorText and background uses AccentColor.</div>
-    <button id="toggle-animation">Toggle Animation</button>
-    <div class="color-indicator" id="color-indicator"></div>
-    <div class="color-label" id="color-label">waiting…</div>
-  </div>
+  <div class="results" id="output">Results will appear here.</div>
 
-  <!-- NEW: Static test results table -->
-  <table id="results">
-    <thead>
-      <tr>
-        <th>Section</th>
-        <th>Computed background-color</th>
-        <th>Swatch</th>
-      </tr>
-    </thead>
-    <tbody id="results-body">
-    </tbody>
-  </table>
+  <script>
+    const output = document.getElementById('output');
 
-<script>
-  // === Dynamic accent setup ===
-  const dynamicSection = document.getElementById("dynamic-section");
-  const picker = document.getElementById("dynamic-picker");
-  dynamicSection.style.accentColor = picker.value;
-  picker.addEventListener("input", () => {
-    dynamicSection.style.accentColor = picker.value;
-  });
-
-  // === Animation section ===
-  const animSection = document.getElementById("anim-section");
-  const toggleBtn = document.getElementById("toggle-animation");
-  const indicator = document.getElementById("color-indicator");
-  const label = document.getElementById("color-label");
-
-  toggleBtn.addEventListener("click", () => {
-    animSection.classList.toggle("animating");
-  });
-
-  function logComputedAccent() {
-    const div = animSection.querySelector(".accent-div");
-    let computedBg;
-    try {
-      computedBg = getComputedStyle(div).backgroundColor;
-    } catch (err) {
-      console.warn("Access blocked or tainted:", err);
-      computedBg = "tainted";
-    }
-
-    if (!computedBg || computedBg === "rgb(0, 0, 255)" || computedBg === "tainted") {
-      indicator.style.backgroundColor = "#ff00ff";
-      label.textContent = "TAINTED / DEFAULTED";
-    } else {
-      indicator.style.backgroundColor = computedBg;
-      label.textContent = computedBg;
-    }
-
-    requestAnimationFrame(logComputedAccent);
-  }
-  requestAnimationFrame(logComputedAccent);
-
-  // === Static section tester ===
-  const testBtn = document.getElementById("run-tests");
-  const resultsBody = document.getElementById("results-body");
-
-  testBtn.addEventListener("click", () => {
-    resultsBody.innerHTML = "";
-    const sections = [
-      { id: "section1", name: "Section 1 (red)" },
-      { id: "section2", name: "Section 2 (auto)" },
-      { id: "dynamic-section", name: "Section 3 (dynamic)" },
-    ];
-
-    for (const { id, name } of sections) {
-      const div = document.querySelector(`#${id} .accent-div`);
-      let computedBg;
+    function queryColor(id) {
+      const el = document.getElementById(id);
       try {
-        computedBg = getComputedStyle(div).backgroundColor;
+        const color = getComputedStyle(el).backgroundColor;
+        output.textContent = `${id}: ${color}`;
       } catch (err) {
-        computedBg = "tainted";
+        output.textContent = `${id}: Error (${err.message})`;
       }
-
-      const row = document.createElement("tr");
-      const nameCell = document.createElement("td");
-      nameCell.textContent = name;
-
-      const colorCell = document.createElement("td");
-      colorCell.textContent = computedBg;
-
-      const swatchCell = document.createElement("td");
-      const swatch = document.createElement("div");
-      swatch.classList.add("swatch");
-
-      if (!computedBg || computedBg === "rgb(0, 0, 255)" || computedBg === "tainted") {
-        swatch.style.backgroundColor = "#ff00ff";
-      } else {
-        swatch.style.backgroundColor = computedBg;
-      }
-      swatchCell.appendChild(swatch);
-
-      row.appendChild(nameCell);
-      row.appendChild(colorCell);
-      row.appendChild(swatchCell);
-      resultsBody.appendChild(row);
     }
-  });
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log('Service worker registered.', reg))
-        .catch(err => console.error('Service worker registration failed:', err));
+
+    // Query while animation runs
+    document.getElementById('query-anim').addEventListener('click', () => {
+      queryColor('animated-div');
     });
-  }
-</script>  
+
+    // Register service worker (for installability)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => console.log('Service worker registered:', reg))
+          .catch(err => console.error('Service worker failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>
-
