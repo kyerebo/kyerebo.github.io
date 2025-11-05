@@ -141,5 +141,35 @@
       });
     }
   </script>
+    <div class="section">
+    <h2>Section 5: Canvas System Color</h2>
+    <canvas id="systemCanvas" width="200" height="100" style="border-radius: 0.5rem;"></canvas>
+    <button onclick="queryCanvasColor()">Query Canvas Color</button>
+  </div>
+  <script>
+    // Paint the canvas with the system AccentColor
+    const canvas = document.getElementById('systemCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Create a hidden element to extract system AccentColor
+    const probe = document.createElement('div');
+    probe.style.background = 'AccentColor';
+    document.body.appendChild(probe);
+    const accentColor = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+
+    // Paint the canvas
+    ctx.fillStyle = accentColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Query color of top-left pixel
+    function queryCanvasColor() {
+      const imageData = ctx.getImageData(0, 0, 1, 1);
+      const [r, g, b, a] = imageData.data;
+      const color = `rgba(${r}, ${g}, ${b}, ${(a / 255).toFixed(2)})`;
+      output.textContent = `Canvas painted color: ${color}`;
+    }
+  </script>
 </body>
 </html>
+
