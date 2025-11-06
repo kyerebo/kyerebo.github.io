@@ -145,33 +145,75 @@
       });
     }
   </script>
-  <div class="section">
-    <h2>Section 5: Canvas System Color</h2>
-    <canvas id="systemCanvas" width="200" height="100" style="border-radius: 0.5rem;"></canvas>
-    <button onclick="queryCanvasColor()">Query Canvas Color</button>
+    <div class="section">
+    <h2>Section 5: Canvas Paint + Read Test (AccentColor)</h2>
+    <canvas id="accentCanvas" width="300" height="100" style="border:1px solid #ccc; border-radius:0.5rem;"></canvas>
+    <div>
+      <button onclick="paintAccentCanvas()">Paint with AccentColor</button>
+      <button onclick="readCanvasImageData()">getImageData()</button>
+      <button onclick="readCanvasDataURL()">toDataURL()</button>
+      <button onclick="readCanvasBlob()">toBlob()</button>
+    </div>
+    <div class="results" id="canvasResults"></div>
   </div>
 
   <script>
-    const canvas = document.getElementById('systemCanvas');
+    const canvas = document.getElementById('accentCanvas');
     const ctx = canvas.getContext('2d');
+    const canvasOutput = document.getElementById('canvasResults');
 
-    // Resolve AccentColor *through computed styles*
-    const sysAccent = getComputedStyle(document.documentElement)
-      .getPropertyValue('--sys-accent')
-      .trim();
+    function logCanvasResult(msg) {
+      canvasOutput.textContent = msg;
+    }
 
-    ctx.fillStyle = sysAccent;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function paintAccentCanvas() {
+      try {
+        ctx.fillStyle = 'AccentColor';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'black';
+        ctx.font = '16px sans-serif';
+        ctx.fillText('Painted AccentColor', 20, 55);
+        logCanvasResult('Canvas painted with AccentColor successfully.');
+      } catch (e) {
+        logCanvasResult('Painting failed: ' + e);
+      }
+    }
 
-    function queryCanvasColor() {
-      const { data } = ctx.getImageData(0, 0, 1, 1);
-      const [r, g, b, a] = data;
-      const color = `rgba(${r}, ${g}, ${b}, ${(a / 255).toFixed(2)})`;
-      output.textContent = `Canvas painted color: ${color}`;
+    function readCanvasImageData() {
+      try {
+        const data = ctx.getImageData(0, 0, 1, 1);
+        logCanvasResult('getImageData() succeeded. Sample pixel: ' +
+          `[${data.data[0]}, ${data.data[1]}, ${data.data[2]}, ${data.data[3]}]`);
+      } catch (e) {
+        logCanvasResult('getImageData() threw: ' + e);
+      }
+    }
+
+    function readCanvasDataURL() {
+      try {
+        const url = canvas.toDataURL();
+        logCanvasResult('toDataURL() succeeded. URL length=' + url.length);
+      } catch (e) {
+        logCanvasResult('toDataURL() threw: ' + e);
+      }
+    }
+
+    function readCanvasBlob() {
+      try {
+        canvas.toBlob(blob => {
+          if (blob) {
+            logCanvasResult('toBlob() succeeded. Blob size=' + blob.size + ' bytes');
+          } else {
+            logCanvasResult('toBlob() callback returned null (possibly tainted).');
+          }
+        });
+      } catch (e) {
+        logCanvasResult('toBlob() threw: ' + e);
+      }
     }
   </script>
-
 </body>
 </html>
+
 
 
