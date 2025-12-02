@@ -2,7 +2,7 @@
   "lang": "en",
   "dir": "ltr",
 
-  "name": "kyerebo.github.io",
+  "name": "kyerebo.github.io - long app name to test truncation of app titles",
   "name_localized": {
     "en": { "value": "Kyerebo (English)", "lang": "en", "dir": "ltr" },
     "de": { "value": "Kyerebo (Deutsch)", "lang": "de", "dir": "ltr" },
@@ -104,3 +104,4 @@
   ],
   "prefer_related_applications": false
 }
+
