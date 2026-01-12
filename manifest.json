@@ -2,7 +2,7 @@
   "lang": "en",
   "dir": "ltr",
 
-  "name": "Kyerebo - System Accent Color Test App",
+  "name": "Kyerebo - Test App",
   "name_localized": {
     "en": { "value": "Kyerebo (English)", "lang": "en", "dir": "ltr" },
     "de": { "value": "Kyerebo (Deutsch)", "lang": "de", "dir": "ltr" },
@@ -127,6 +127,7 @@
   ],
   "prefer_related_applications": false
 }
+
 
 
 
