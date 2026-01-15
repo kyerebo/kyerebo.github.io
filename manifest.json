@@ -37,7 +37,16 @@
     { "src": "./icons/icon-256.png", "sizes": "256x256", "type": "image/png" },
     { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ],
-
+  "icons_localized": {
+    "ar" : [
+      { "src": "./icons/localized_icons/ar/black_cat-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "./icons/localized_icons/ar/black_cat-258.png", "sizes": "258x258", "type": "image/png" }
+    ],
+    "de" : [
+      { "src": "./icons/localized_icons/ar/Iconka-Meow-Cat-purr.128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "./icons/localized_icons/ar/Iconka-Meow-Cat-purr.256.png", "sizes": "256x256", "type": "image/png" }
+    ]
+  },
   "screenshots": [
     {
       "src": "./icons/icon-128.png",
@@ -127,6 +136,7 @@
   ],
   "prefer_related_applications": false
 }
+
 
 
 
