@@ -95,13 +95,13 @@
       ],
       "icons_localized": {
         "en": [
-          { "src": "./icons/en/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+          { "src": "./icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
         ],
         "de": [
-          { "src": "./icons/de/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+          { "src": "./icons/localized_icons/de/Iconka-Meow-Cat-purr.128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
         ],
         "ar": [
-          { "src": "./icons/ar/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+          { "src": "./icons/localized_icons/ar/black_cat-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
         ]
       }
     }
@@ -120,6 +120,7 @@
   ],
   "prefer_related_applications": false
 }
+
 
 
 
