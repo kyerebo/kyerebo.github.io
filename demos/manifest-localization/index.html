@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manifest Localization — Demo</title>
+  <meta name="theme-color" content="#1A420C">
+  <link rel="manifest" href="../../manifest.json">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #1A420C;
+      --green-light: #2a5a18;
+      --amber: #DC851F;
+      --amber-light: #e9a04d;
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --text: #1c1c1c;
+      --text-muted: #6b6b6b;
+      --border: #e0ddd6;
+      --code-bg: #f0ede6;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111110;
+        --surface: #1c1c1a;
+        --text: #e8e6e1;
+        --text-muted: #8a8880;
+        --border: #2e2e2a;
+        --code-bg: #242422;
+      }
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Slide container */
+    .slides {
+      display: flex;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide {
+      min-width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Navigation */
+    .nav-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1.25rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--amber);
+      color: #fff;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .nav-btn.prev { left: 1.5rem; }
+    .nav-btn.next { right: 1.5rem; }
+    .nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+    /* Slide indicators */
+    .indicators {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      z-index: 100;
+    }
+
+    .indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .indicator.active {
+      background: var(--amber);
+      transform: scale(1.3);
+    }
+
+    /* Back link */
+    .back-link {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .back-link:hover { background: var(--amber); color: #fff; }
+
+    /* Slide content helpers */
+    .slide-title {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+      letter-spacing: -0.02em;
+    }
+
+    .slide-title .accent {
+      background: linear-gradient(135deg, var(--green), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .slide-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Mock Edge Install Dialog — matches real Edge dark prompt */
+    .edge-dialog {
+      width: 380px;
+      max-width: 90vw;
+      background: #292929;
+      border-radius: 8px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+      overflow: hidden;
+      font-size: 0.875rem;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .edge-dialog-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      padding: 1.25rem 1.25rem 0;
+    }
+
+    .edge-dialog-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    .edge-dialog-title-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .edge-dialog-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .edge-dialog-publisher {
+      font-size: 0.75rem;
+      color: #6eb5ff;
+      margin-top: 0.15rem;
+    }
+
+    .edge-dialog-close {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 0.9rem;
+      cursor: default;
+    }
+
+    .edge-dialog-body {
+      padding: 1rem 1.25rem 0.75rem;
+      font-size: 0.8rem;
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    .edge-dialog-body p {
+      margin-bottom: 0.4rem;
+    }
+
+    .edge-dialog-body ul {
+      padding-left: 1.1rem;
+      margin: 0;
+    }
+
+    .edge-dialog-body li {
+      margin-bottom: 0.15rem;
+      list-style: disc;
+    }
+
+    .edge-dialog-footer {
+      padding: 0.75rem 1.25rem 1.25rem;
+      display: flex;
+      gap: 0.6rem;
+      justify-content: stretch;
+    }
+
+    .edge-btn {
+      flex: 1;
+      padding: 0.45rem 0;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: default;
+      text-align: center;
+    }
+
+    .edge-btn.outline {
+      background: transparent;
+      border: 1px solid #555;
+      color: #e0e0e0;
+    }
+
+    .edge-btn.primary {
+      background: #4c4c4c;
+      border: 1px solid #666;
+      color: #fff;
+    }
+
+    /* Mismatch highlight */
+    .mismatch-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      background: #fef2e0;
+      color: #b5600e;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .mismatch-badge { background: #3d2a10; color: #e9a04d; }
+    }
+
+    /* Code block */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      text-align: left;
+      max-width: 560px;
+      width: 90vw;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .code-block .key { color: #1A420C; font-weight: 600; }
+    .code-block .str { color: #b5600e; }
+    .code-block .comment { color: var(--text-muted); font-style: italic; }
+
+    @media (prefers-color-scheme: dark) {
+      .code-block .key { color: #7fba6a; }
+      .code-block .str { color: #e9a04d; }
+    }
+
+    /* Comparison layout */
+    .comparison {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .comparison-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .comparison-label.bad { color: #c0392b; }
+    .comparison-label.good { color: var(--green); }
+
+    /* Slide 3: try-it */
+    .try-it-arrow {
+      position: absolute;
+      top: 3rem;
+      right: 6rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      animation: bounce 1.5s infinite;
+    }
+
+    .try-it-arrow svg {
+      width: 48px;
+      height: 48px;
+      color: var(--amber);
+    }
+
+    .try-it-arrow span {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--amber);
+      white-space: nowrap;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .instructions {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      max-width: 520px;
+      width: 90vw;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    .instructions h3 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--green);
+    }
+
+    .instructions ol {
+      padding-left: 1.25rem;
+      line-height: 1.8;
+      font-size: 0.9rem;
+    }
+
+    .instructions code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    /* Slide number */
+    .slide-num {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../../index.html">⟵ Demos</a>
+
+  <button class="nav-btn prev" id="prevBtn" aria-label="Previous slide">‹</button>
+  <button class="nav-btn next" id="nextBtn" aria-label="Next slide">›</button>
+
+  <div class="indicators" id="indicators">
+    <div class="indicator active"></div>
+    <div class="indicator"></div>
+    <div class="indicator"></div>
+  </div>
+
+  <div class="slides" id="slides">
+
+    <!-- ==================== SLIDE 1: THE GAP ==================== -->
+    <div class="slide">
+      <span class="slide-num">1 / 3</span>
+      <h1 class="slide-title">The <span class="accent">Problem</span></h1>
+      <p class="slide-subtitle">
+        Web app manifests only support a single language. Here's what a Japanese user sees when installing an English-authored PWA:
+      </p>
+
+      <div class="edge-dialog">
+        <div class="edge-dialog-top">
+          <img class="edge-dialog-icon" src="../../icons/icon-128.png" alt="English app icon">
+          <div class="edge-dialog-title-area">
+            <div class="edge-dialog-title">QuickPay アプリのインストール</div>
+            <div class="edge-dialog-publisher">発行元: quickpay.example.com</div>
+          </div>
+          <div class="edge-dialog-close">✕</div>
+        </div>
+        <div class="edge-dialog-body">
+          <p>このサイトをよく使いますか？次のアプリをインストールします:</p>
+          <ul>
+            <li>フォーカスしたウィンドウで開きます</li>
+            <li>タスク バーへのピン留めなどのクイック アクセス オプションがあります</li>
+            <li>複数のデバイス間で同期します</li>
+          </ul>
+        </div>
+        <div class="edge-dialog-footer">
+          <div class="edge-btn outline">インストール</div>
+          <div class="edge-btn primary">今はしない</div>
+        </div>
+      </div>
+
+      <div class="mismatch-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        UI is in Japanese, but app name &amp; icon are English!
+      </div>
+
+      <p style="margin-top:1.5rem; font-size:0.85rem; color:var(--text-muted); text-align:center; max-width:420px; line-height:1.5;">
+        The browser UI is in Japanese, but the app name and icon are stuck in English — because the manifest has no way to provide alternatives.
+      </p>
+    </div>
+
+    <!-- ==================== SLIDE 2: THE SOLUTION ==================== -->
+    <div class="slide">
+      <span class="slide-num">2 / 3</span>
+      <h1 class="slide-title"><span class="accent">Manifest Localization</span></h1>
+      <p class="slide-subtitle">
+        New <code>*_localized</code> fields let developers provide per-language values. The browser picks the right one automatically.
+      </p>
+
+      <div class="code-block"><span class="comment">// manifest.json</span>
+{
+  <span class="key">"name"</span>: <span class="str">"QuickPay"</span>,
+  <span class="key">"name_localized"</span>: {
+    <span class="key">"ja"</span>: { <span class="key">"value"</span>: <span class="str">"クイックペイ"</span>, <span class="key">"lang"</span>: <span class="str">"ja"</span> }
+  },
+  <span class="key">"icons"</span>: [{ <span class="key">"src"</span>: <span class="str">"icon-dollar.png"</span> }],
+  <span class="key">"icons_localized"</span>: {
+    <span class="key">"ja"</span>: [{ <span class="key">"src"</span>: <span class="str">"icon-yen.png"</span> }]
+  }
+}</div>
+
+      <div style="margin-top: 2rem;">
+        <div class="comparison">
+          <div>
+            <div class="comparison-label bad">❌ Before</div>
+            <div class="edge-dialog" style="transform:scale(0.85); transform-origin:top center;">
+              <div class="edge-dialog-top">
+                <img class="edge-dialog-icon" src="../../icons/icon-128.png" alt="English icon">
+                <div class="edge-dialog-title-area">
+                  <div class="edge-dialog-title">QuickPay アプリのインストール</div>
+                  <div class="edge-dialog-publisher">発行元: quickpay.example.com</div>
+                </div>
+                <div class="edge-dialog-close">✕</div>
+              </div>
+              <div class="edge-dialog-body">
+                <p>このサイトをよく使いますか？</p>
+              </div>
+              <div class="edge-dialog-footer">
+                <div class="edge-btn outline">インストール</div>
+                <div class="edge-btn primary">今はしない</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="comparison-label good">✓ After</div>
+            <div class="edge-dialog" style="transform:scale(0.85); transform-origin:top center;">
+              <div class="edge-dialog-top">
+                <img class="edge-dialog-icon" src="../../icons/localized_icons/ja/icon-128.png" alt="Japanese icon">
+                <div class="edge-dialog-title-area">
+                  <div class="edge-dialog-title">クイックペイ アプリのインストール</div>
+                  <div class="edge-dialog-publisher">発行元: quickpay.example.com</div>
+                </div>
+                <div class="edge-dialog-close">✕</div>
+              </div>
+              <div class="edge-dialog-body">
+                <p>このサイトをよく使いますか？</p>
+              </div>
+              <div class="edge-dialog-footer">
+                <div class="edge-btn outline">インストール</div>
+                <div class="edge-btn primary">今はしない</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 3: TRY IT ==================== -->
+    <div class="slide">
+      <span class="slide-num">3 / 3</span>
+
+      <div class="try-it-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+        <span>Install button</span>
+      </div>
+
+      <h1 class="slide-title">Let's <span class="accent">try it</span></h1>
+      <p class="slide-subtitle">
+        This site has a localized manifest. Install it as a PWA and see localization in action!
+      </p>
+
+      <div class="instructions">
+        <h3>How to try:</h3>
+        <ol>
+          <li>Set your browser language to <strong>Japanese</strong> (日本語)<br>
+            <code>edge://settings/languages</code></li>
+          <li>Click the <strong>install button</strong> in the address bar (upper-right) ↗</li>
+          <li>Notice the <strong>Japanese app name and icon</strong> in the install prompt</li>
+          <li>Or: install in English first, then switch to Japanese to see the change</li>
+        </ol>
+      </div>
+
+      <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--text-muted); text-align:center;">
+        The manifest at <code>manifest.json</code> includes <code>name_localized</code> and <code>icons_localized</code> with Japanese values.
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    const slides = document.getElementById('slides');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const indicators = document.querySelectorAll('.indicator');
+    const totalSlides = 3;
+    let current = 0;
+
+    function goTo(index) {
+      if (index < 0 || index >= totalSlides) return;
+      current = index;
+      slides.style.transform = `translateX(-${current * 100}vw)`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === totalSlides - 1;
+      indicators.forEach((ind, i) => ind.classList.toggle('active', i === current));
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 60) {
+        if (diff > 0) goTo(current + 1);
+        else goTo(current - 1);
+      }
+    }, { passive: true });
+
+    // Initial state
+    goTo(0);
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('../../service-worker.js')
+        .then(reg => console.log('SW registered:', reg))
+        .catch(err => console.error('SW failed:', err));
+    }
+  </script>
+</body>
+</html>

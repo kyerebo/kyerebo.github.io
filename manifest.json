@@ -4,23 +4,20 @@
 
   "name": "Kyerebo - Test App",
   "name_localized": {
-    "en": { "value": "Kyerebo (English)", "lang": "en", "dir": "ltr" },
-    "de": { "value": "Kyerebo (Deutsch)", "lang": "de", "dir": "ltr" },
-    "ar": { "value": "كيريبو (العربية)", "lang": "ar", "dir": "rtl" }
+    "en": { "value": "Kyerebo - Test App", "lang": "en", "dir": "ltr" },
+    "ja": { "value": "キエレボ - テストアプリ", "lang": "ja", "dir": "ltr" }
   },
 
   "short_name": "Kyerebo",
   "short_name_localized": {
     "en": { "value": "Kyerebo", "lang": "en", "dir": "ltr" },
-    "de": { "value": "Kyerebo", "lang": "de", "dir": "ltr" },
-    "ar": { "value": "كيريبو", "lang": "ar", "dir": "rtl" }
+    "ja": { "value": "キエレボ", "lang": "ja", "dir": "ltr" }
   },
 
-  "description": "A sample Progressive Web App demonstrating the application-title meta tag.",
+  "description": "A sample Progressive Web App demonstrating manifest localization.",
   "description_localized": {
     "en": { "value": "Sample PWA showing localized manifest fields.", "lang": "en", "dir": "ltr" },
-    "de": { "value": "Beispiel-PWA mit lokalisierten Manifestfeldern.", "lang": "de", "dir": "ltr" },
-    "ar": { "value": "تطبيق ويب تقدّمي يعرض حقول بيان مترجمة.", "lang": "ar", "dir": "rtl" }
+    "ja": { "value": "ローカライズされたマニフェストフィールドを表示するサンプルPWA。", "lang": "ja", "dir": "ltr" }
   },
 
   "start_url": "./",
@@ -28,96 +25,55 @@
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
-  "theme_color": "#336699",
+  "theme_color": "#1A420C",
   "categories": ["testing", "developer-tools"],
 
   "icons": [
     { "src": "./icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
-    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "./icons/icon-256.png", "sizes": "256x256", "type": "image/png" },
-    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "./icons/icon-256.png", "sizes": "256x256", "type": "image/png" }
   ],
   "icons_localized": {
-    "ar" : [
-      { "src": "./icons/localized_icons/ar/black_cat-128.png", "sizes": "128x128", "type": "image/png" },
-      { "src": "./icons/localized_icons/ar/black_cat-258.png", "sizes": "258x258", "type": "image/png" }
-    ],
-    "de" : [
-      { "src": "./icons/localized_icons/de/Iconka-Meow-Cat-purr.128.png", "sizes": "128x128", "type": "image/png" },
-      { "src": "./icons/localized_icons/de/Iconka-Meow-Cat-purr.256.png", "sizes": "256x256", "type": "image/png" }
+    "ja": [
+      { "src": "./icons/localized_icons/ja/icon-128.png", "sizes": "128x128", "type": "image/png" },
+      { "src": "./icons/localized_icons/ja/icon-256.png", "sizes": "256x256", "type": "image/png" }
     ]
   },
+
   "screenshots": [
-    {
-      "src": "./icons/icon-128.png",
-      "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-256.png",
-      "sizes": "256x256",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "./icons/icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "./icons/icon-256.png", "sizes": "256x256", "type": "image/png" }
   ],
+
   "shortcuts": [
     {
       "name": "Open Dashboard",
       "name_localized": {
         "en": { "value": "Open Dashboard", "lang": "en", "dir": "ltr" },
-        "de": { "value": "Dashboard öffnen", "lang": "de", "dir": "ltr" },
-        "ar": { "value": "فتح لوحة المعلومات", "lang": "ar", "dir": "rtl" }
+        "ja": { "value": "ダッシュボードを開く", "lang": "ja", "dir": "ltr" }
       },
       "short_name": "Dashboard",
       "short_name_localized": {
         "en": { "value": "Dashboard", "lang": "en", "dir": "ltr" },
-        "de": { "value": "Dashboard", "lang": "de", "dir": "ltr" },
-        "ar": { "value": "لوحة", "lang": "ar", "dir": "rtl" }
+        "ja": { "value": "ダッシュボード", "lang": "ja", "dir": "ltr" }
       },
       "description": "Go to your dashboard.",
       "description_localized": {
         "en": { "value": "Go to your dashboard.", "lang": "en", "dir": "ltr" },
-        "de": { "value": "Zum Dashboard wechseln.", "lang": "de", "dir": "ltr" },
-        "ar": { "value": "انتقل إلى لوحتك.", "lang": "ar", "dir": "rtl" }
+        "ja": { "value": "ダッシュボードに移動します。", "lang": "ja", "dir": "ltr" }
       },
-      "url": "./dashboard",
+      "url": "./demos/system-accent-color/dashboard.html",
       "icons": [
-        { "src": "./icons/shortcut-dashboard.png", "sizes": "96x96", "type": "image/png", "purpose": "any" }
+        { "src": "./icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
       ],
       "icons_localized": {
-        "en": [
-          { "src": "./icons/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
-        ],
-        "de": [
-          { "src": "./icons/localized_icons/de/Iconka-Meow-Cat-purr.128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
-        ],
-        "ar": [
-          { "src": "./icons/localized_icons/ar/black_cat-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
+        "ja": [
+          { "src": "./icons/localized_icons/ja/icon-128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" }
         ]
       }
     }
   ],
 
-  "related_applications": [
-    {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.example.app",
-      "id": "com.example.app"
-    },
-    {
-      "platform": "itunes",
-      "url": "https://itunes.apple.com/app/example-app/id123456789"
-    }
-  ],
+  "related_applications": [],
   "prefer_related_applications": false
 }
 
