@@ -334,36 +334,6 @@
     .comparison-label.bad { color: #c0392b; }
     .comparison-label.good { color: var(--green); }
 
-    /* Slide 3: try-it */
-    .try-it-arrow {
-      position: absolute;
-      top: 3rem;
-      right: 6rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-      animation: bounce 1.5s infinite;
-    }
-
-    .try-it-arrow svg {
-      width: 48px;
-      height: 48px;
-      color: var(--amber);
-    }
-
-    .try-it-arrow span {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--amber);
-      white-space: nowrap;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
     .instructions {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -529,11 +499,6 @@
     <!-- ==================== SLIDE 3: TRY IT ==================== -->
     <div class="slide">
       <span class="slide-num">3 / 3</span>
-
-      <div class="try-it-arrow">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
-        <span>Install button</span>
-      </div>
 
       <h1 class="slide-title">Let's <span class="accent">try it</span></h1>
       <p class="slide-subtitle">
