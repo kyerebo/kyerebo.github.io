@@ -1,142 +1,337 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>AccentColor Taint Test</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <!-- PWA manifest -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>kyerebo demos</title>
+  <meta name="theme-color" content="#1A420C">
   <link rel="manifest" href="manifest.json">
-
-  <!-- Theme color for UI -->
-  <meta name="theme-color" content="#336699">
-
   <style>
-    body {
-      font-family: sans-serif;
-      display: grid;
-      gap: 2rem;
-      padding: 2rem;
-      background-color: #f4f4f4;
-    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .section {
-      border: 2px solid #ccc;
-      border-radius: 1rem;
-      padding: 1rem;
-      background: #fff;
-    }
-
-    .accent-div {
-      background-color: AccentColor;
-      color: AccentColorText;
-      padding: 1rem;
-      margin-top: 1rem;
-      border-radius: 0.5rem;
-      transition: background-color 1s linear;
-    }
-
-    .red-div {
-      background-color: red;
-      padding: 1rem;
-      margin-top: 1rem;
-      border-radius: 0.5rem;
-    }
-
-    .animate {
-      animation: pulseColor 2s infinite alternate;
-    }
-
-    .animate-control {
-      animation: pulseControl 2s infinite alternate;
-    }
-
-    @keyframes pulseColor {
-      0% { background-color: AccentColor; }
-      100% { background-color: #ff00ff; }
-    }
-
-    @keyframes pulseControl {
-      0% { background-color: #00ffff; }
-      100% { background-color: #ff00ff; }
-    }
-
-    button {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      background-color: #336699;
-      color: white;
-      cursor: pointer;
-    }
-
-    .results {
-      margin-top: 1rem;
-      font-family: monospace;
-      background: #eee;
-      padding: 0.5rem;
-      border-radius: 0.25rem;
-    }
-    
     :root {
-      --sys-accent: AccentColor;
+      --green: #1A420C;
+      --green-light: #2a5a18;
+      --amber: #DC851F;
+      --amber-light: #e9a04d;
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --surface-hover: #fafaf7;
+      --text: #1c1c1c;
+      --text-muted: #6b6b6b;
+      --border: #e0ddd6;
+      --shadow: rgba(26, 66, 12, 0.08);
+      --shadow-lg: rgba(26, 66, 12, 0.12);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111110;
+        --surface: #1c1c1a;
+        --surface-hover: #242422;
+        --text: #e8e6e1;
+        --text-muted: #8a8880;
+        --border: #2e2e2a;
+        --shadow: rgba(0, 0, 0, 0.3);
+        --shadow-lg: rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, var(--green) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 20%, var(--amber) 0%, transparent 60%);
+      opacity: 0.08;
+      pointer-events: none;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      border-radius: 14px;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 16px rgba(26, 66, 12, 0.25);
+    }
+
+    .logo svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+    }
+
+    header h1 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    header h1 .accent {
+      background: linear-gradient(135deg, var(--green), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+      max-width: 440px;
+      margin-inline: auto;
+      line-height: 1.5;
+    }
+
+    /* Divider */
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green), var(--amber));
+      border-radius: 2px;
+      margin: 0 auto 2rem;
+    }
+
+    /* Demo grid */
+    main {
+      flex: 1;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .demo-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    /* Card */
+    .card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 1px 3px var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--shadow-lg);
+      border-color: var(--amber-light);
+    }
+
+    .card:active {
+      transform: translateY(0);
+    }
+
+    .card:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 2px;
+    }
+
+    .card.disabled {
+      opacity: 0.55;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Icon circles */
+    .card-icon {
+      flex-shrink: 0;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover .card-icon {
+      transform: scale(1.08);
+    }
+
+    .card-icon.green {
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #fff;
+    }
+
+    .card-icon.amber {
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+      color: #fff;
+    }
+
+    /* Card text */
+    .card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Arrow indicator */
+    .card-arrow {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .card:hover .card-arrow {
+      transform: translateX(3px);
+      color: var(--amber);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2em 0.55em;
+      border-radius: 6px;
+      background: var(--border);
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    footer a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Subtle entrance animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .card:nth-child(2) {
+      animation-delay: 0.08s;
     }
   </style>
 </head>
 <body>
-  <div class="section" style="accent-color: red;">
-    <h2>Section 1: accent-color: red</h2>
-    <form>
-      <label><input type="checkbox"> Checkbox</label>
-      <label><input type="radio" name="r1"> Radio 1</label>
-      <label><input type="radio" name="r1"> Radio 2</label>
-      <input type="range">
-    </form>
-    <div class="red-div" id="static-red">This text background is styled with red.</div>
-    <button onclick="queryColor('static-red')">Get Computed Color</button>
-  </div>
 
-  <div class="section" style="accent-color: auto;">
-    <h2>Section 2: accent-color: auto (system)</h2>
-    <form>
-      <label><input type="checkbox"> Checkbox</label>
-      <label><input type="radio" name="r2"> Radio 1</label>
-      <label><input type="radio" name="r2"> Radio 2</label>
-      <input type="range">
-    </form>
-    <div class="accent-div" id="system-auto">This text uses AccentColorText and background uses AccentColor.</div>
-    <button onclick="queryColor('system-auto')">Get Computed Color</button>
-  </div>
+  <header>
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/><path d="M2 7l10 5 10-5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <h1><span class="accent">kyerebo</span> demos</h1>
+    <p>Experimental demos exploring modern web platform features.</p>
+  </header>
 
-  <div class="section">
-    <h2>Section 3: Control Animation (No AccentColor)</h2>
-    <div class="red-div animate-control" id="control-div">Animating #00ffff → #ff00ff (no AccentColor)</div>
-    <button onclick="queryColor('control-div')">Query mid-animation</button>
-  </div>
+  <div class="divider"></div>
 
-  <div class="section">
-    <h2>Section 4: Animation Taint Test (AccentColor)</h2>
-    <div class="accent-div animate" id="animated-div">Animating AccentColor → #ff00ff</div>
-    <button onclick="queryColor('animated-div')">Query mid-animation</button>
-  </div>
+  <main>
+    <p class="section-label">Demos</p>
 
-  <div class="results" id="output">Results will appear here.</div>
+    <div class="demo-grid">
+
+      <a class="card" href="./demos/system-accent-color/index.html">
+        <div class="card-icon green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">System Accent Color</div>
+          <div class="card-desc">Testing CSS <code>AccentColor</code> keyword behavior — taint checks, canvas paint, animations, and custom property propagation.</div>
+        </div>
+        <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+
+      <div class="card disabled" tabindex="-1">
+        <div class="card-icon amber">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Manifest Localization <span class="badge">Coming Soon</span></div>
+          <div class="card-desc">Exploring localized PWA manifest fields — name, icons, shortcuts, and descriptions across languages.</div>
+        </div>
+        <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/kyerebo/kyerebo.github.io" target="_blank" rel="noopener">View on GitHub</a>
+  </footer>
 
   <script>
-    const output = document.getElementById('output');
-
-    function queryColor(id) {
-      const el = document.getElementById(id);
-      try {
-        const color = getComputedStyle(el).backgroundColor;
-        output.textContent = `${id}: ${color}`;
-      } catch (err) {
-        output.textContent = `${id}: Error (${err.message})`;
-      }
-    }
-
-    // Register service worker (for installability)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./service-worker.js')
@@ -145,204 +340,5 @@
       });
     }
   </script>
-    <div class="section">
-    <h2>Section 5: Canvas Paint + Read Test (AccentColor)</h2>
-    <canvas id="accentCanvas" width="300" height="100" style="border:1px solid #ccc; border-radius:0.5rem;"></canvas>
-    <div>
-      <button onclick="paintAccentCanvas()">Paint with AccentColor</button>
-      <button onclick="readCanvasImageData()">getImageData()</button>
-      <button onclick="readCanvasDataURL()">toDataURL()</button>
-      <button onclick="readCanvasBlob()">toBlob()</button>
-    </div>
-    <div class="results" id="canvasResults"></div>
-  </div>
-
-  <script>
-    const canvas = document.getElementById('accentCanvas');
-    const ctx = canvas.getContext('2d');
-    const canvasOutput = document.getElementById('canvasResults');
-
-    function logCanvasResult(msg) {
-      canvasOutput.textContent = msg;
-    }
-
-    function paintAccentCanvas() {
-      try {
-        ctx.fillStyle = 'AccentColor';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'black';
-        ctx.font = '16px sans-serif';
-        ctx.fillText('Painted AccentColor', 20, 55);
-        logCanvasResult('Canvas painted with AccentColor successfully.');
-      } catch (e) {
-        logCanvasResult('Painting failed: ' + e);
-      }
-    }
-
-    function readCanvasImageData() {
-      try {
-        const data = ctx.getImageData(0, 0, 1, 1);
-        logCanvasResult('getImageData() succeeded. Sample pixel: ' +
-          `[${data.data[0]}, ${data.data[1]}, ${data.data[2]}, ${data.data[3]}]`);
-      } catch (e) {
-        logCanvasResult('getImageData() threw: ' + e);
-      }
-    }
-
-    function readCanvasDataURL() {
-      try {
-        const url = canvas.toDataURL();
-        logCanvasResult('toDataURL() succeeded. URL length=' + url.length);
-      } catch (e) {
-        logCanvasResult('toDataURL() threw: ' + e);
-      }
-    }
-
-    function readCanvasBlob() {
-      try {
-        canvas.toBlob(blob => {
-          if (blob) {
-            logCanvasResult('toBlob() succeeded. Blob size=' + blob.size + ' bytes');
-          } else {
-            logCanvasResult('toBlob() callback returned null (possibly tainted).');
-          }
-        });
-      } catch (e) {
-        logCanvasResult('toBlob() threw: ' + e);
-      }
-    }
-  </script>
-  <div class="section">
-  <h2>Section 6: Custom Property Substitution Taint Test</h2>
-
-  <p>
-    Tests whether tainting from <code>AccentColor</code> propagates through a
-    *registered* custom property (<code>--accent</code>) into an
-    *unregistered* property (<code>--my-color</code>), then into actual style properties.
-  </p>
-
-  <style>
-    @property --accent {
-      syntax: "<color>";
-      inherits: true;
-      initial-value: #0f0;
-    }
-
-    #taint-subst-root {
-      --accent: AccentColor;
-      --my-color: var(--accent);
-      background-color: var(--my-color);
-      color: AccentColorText;
-      padding: 1rem;
-      border-radius: 0.5rem;
-    }
-  </style>
-
-  <div id="taint-subst-root">
-    This element uses:  
-    <ul>
-      <li><code>--accent: AccentColor</code></li>
-      <li><code>--my-color: var(--accent)</code></li>
-      <li><code>background-color: var(--my-color)</code></li>
-      <li><code>color: AccentColorText</code></li>
-    </ul>
-  </div>
-
-  <button onclick="runTaintSubstitutionTest()">Dump values</button>
-
-  <div class="results" id="subst-results"></div>
-</div>
-
-<script>
-function runTaintSubstitutionTest() {
-  const root = document.getElementById('taint-subst-root');
-  const cs = getComputedStyle(root);
-  const out = document.getElementById('subst-results');
-
-  try {
-    const bg = cs.backgroundColor;
-    const accent = cs.getPropertyValue('--accent');
-    const my = cs.getPropertyValue('--my-color');
-
-    out.textContent =
-      'background-color: ' + bg + '\n' +
-      '--accent: ' + accent + '\n' +
-      '--my-color: ' + my;
-  } catch (e) {
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-</script>
-<div class="section">
-  <h2>Section 7: Complex Expression Taint Test (if(), mixing, exfiltration)</h2>
-
-  <p>
-    Tests whether <code>if()</code> logic, numeric coercion attempts, and
-    assigning tainted values into non-color properties preserve tainting.
-  </p>
-
-  <style>
-    #complex-taint {
-      /* Derive a tainted value through expression logic */
-      --raw-accent: AccentColor;
-
-      /* Try to coerce to number-like values */
-      --conditional: if(var(--raw-accent) = red, 1, 999);
-
-      /* Use tainted color inside calc() */
-      --calc-mix: calc(1px + (var(--raw-accent)));
-
-      /* Try exfiltration to a non-color property */
-      z-index: var(--conditional);
-
-      /* Also apply tainted color */
-      background-color: var(--raw-accent);
-      padding: 1rem;
-      border-radius: 0.5rem;
-    }
-  </style>
-
-  <div id="complex-taint">
-    This block tests:<br>
-    <ul>
-      <li><code>if()</code> conditions involving AccentColor</li>
-      <li><code>calc()</code> with mixed color values</li>
-      <li>passing tainted values to <code>z-index</code></li>
-    </ul>
-  </div>
-
-  <button onclick="runComplexTaintTest()">Dump computed values</button>
-
-  <div class="results" id="complex-results"></div>
-</div>
-
-<script>
-function runComplexTaintTest() {
-  const el = document.getElementById('complex-taint');
-  const cs = getComputedStyle(el);
-  const out = document.getElementById('complex-results');
-
-  try {
-    const bg = cs.backgroundColor;
-    const rawAccent = cs.getPropertyValue('--raw-accent');
-    const conditional = cs.getPropertyValue('--conditional');
-    const calcMix = cs.getPropertyValue('--calc-mix');
-    const z = cs.zIndex;
-
-    out.textContent =
-      'background-color: ' + bg + '\n' +
-      '--raw-accent: ' + rawAccent + '\n' +
-      '--conditional: ' + conditional + '\n' +
-      '--calc-mix: ' + calcMix + '\n' +
-      'z-index (tainted attempt): ' + z;
-  } catch (e) {
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-</script>
 </body>
 </html>
-
-
-
-
