@@ -291,14 +291,14 @@
     <div class="logo">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/><path d="M2 7l10 5 10-5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
     </div>
-    <h1><span class="accent">kyerebo</span> demos</h1>
-    <p>Experimental demos exploring modern web platform features.</p>
+    <h1><span class="accent">kyerebo</span> <span data-i18n="title-suffix">demos</span></h1>
+    <p data-i18n="subtitle">Experimental demos exploring modern web platform features.</p>
   </header>
 
   <div class="divider"></div>
 
   <main>
-    <p class="section-label">Demos</p>
+    <p class="section-label" data-i18n="section-label">Demos</p>
 
     <div class="demo-grid">
 
@@ -307,8 +307,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
         </div>
         <div class="card-body">
-          <div class="card-title">System Accent Color</div>
-          <div class="card-desc">Testing CSS <code>AccentColor</code> keyword behavior — taint checks, canvas paint, animations, and custom property propagation.</div>
+          <div class="card-title" data-i18n="card1-title">System Accent Color</div>
+          <div class="card-desc" data-i18n="card1-desc">Testing CSS <code>AccentColor</code> keyword behavior — taint checks, canvas paint, animations, and custom property propagation.</div>
         </div>
         <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
@@ -318,8 +318,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
         </div>
         <div class="card-body">
-          <div class="card-title">Manifest Localization</div>
-          <div class="card-desc">Exploring localized PWA manifest fields — name, icons, shortcuts, and descriptions across languages.</div>
+          <div class="card-title" data-i18n="card2-title">Manifest Localization</div>
+          <div class="card-desc" data-i18n="card2-desc">Exploring localized PWA manifest fields — name, icons, shortcuts, and descriptions across languages.</div>
         </div>
         <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
@@ -328,10 +328,38 @@
   </main>
 
   <footer>
-    <a href="https://github.com/kyerebo/kyerebo.github.io" target="_blank" rel="noopener">View on GitHub</a>
+    <a href="https://github.com/kyerebo/kyerebo.github.io" target="_blank" rel="noopener" data-i18n="footer-link">View on GitHub</a>
   </footer>
 
   <script>
+    const i18n = {
+      ja: {
+        'title-suffix': 'デモ',
+        'subtitle': '最新のウェブプラットフォーム機能を探る実験的デモ。',
+        'section-label': 'デモ',
+        'card1-title': 'システム アクセント カラー',
+        'card1-desc': 'CSS <code>AccentColor</code> キーワードの動作テスト — 汚染チェック、キャンバス描画、アニメーション、カスタムプロパティの伝播。',
+        'card2-title': 'マニフェスト ローカライゼーション',
+        'card2-desc': 'ローカライズされたPWAマニフェストフィールドの探索 — 名前、アイコン、ショートカット、説明を多言語で表示。',
+        'footer-link': 'GitHubで見る',
+      }
+    };
+
+    (function applyLocale() {
+      const lang = navigator.language || navigator.userLanguage || 'en';
+      const base = lang.split('-')[0];
+      const strings = i18n[base];
+      if (!strings) return;
+
+      document.documentElement.lang = base;
+      document.title = 'kyerebo ' + strings['title-suffix'];
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (strings[key]) el.innerHTML = strings[key];
+      });
+    })();
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./service-worker.js')
