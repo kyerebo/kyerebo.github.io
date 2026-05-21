@@ -283,6 +283,10 @@
     .card:nth-child(2) {
       animation-delay: 0.08s;
     }
+
+    .card:nth-child(3) {
+      animation-delay: 0.16s;
+    }
   </style>
 </head>
 <body>
@@ -324,6 +328,17 @@
         <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
 
+      <a class="card" href="./demos/wco-window-drag/index.html">
+        <div class="card-icon green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M2 6h20"/><circle cx="5" cy="4.5" r="0.5" fill="currentColor" stroke="none"/><circle cx="7.5" cy="4.5" r="0.5" fill="currentColor" stroke="none"/><circle cx="10" cy="4.5" r="0.5" fill="currentColor" stroke="none"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title" data-i18n="card3-title">WCO &amp; window-drag</div>
+          <div class="card-desc" data-i18n="card3-desc">Testing Window Controls Overlay with custom draggable regions using <code>window-drag</code> and <code>app-region</code> CSS properties.</div>
+        </div>
+        <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+
     </div>
   </main>
 
@@ -341,6 +356,8 @@
         'card1-desc': 'CSS <code>AccentColor</code> キーワードの動作テスト — 汚染チェック、キャンバス描画、アニメーション、カスタムプロパティの伝播。',
         'card2-title': 'マニフェスト ローカライゼーション',
         'card2-desc': 'ローカライズされたPWAマニフェストフィールドの探索 — 名前、アイコン、ショートカット、説明を多言語で表示。',
+        'card3-title': 'WCO & window-drag',
+        'card3-desc': 'Window Controls Overlayとカスタムドラッグ領域のテスト — <code>window-drag</code>と<code>app-region</code> CSSプロパティを使用。',
         'footer-link': 'GitHubで見る',
       }
     };

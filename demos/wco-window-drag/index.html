@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WCO &amp; window-drag Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Dedicated manifest that opts into Window Controls Overlay -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1A420C">
+
+  <style>
+    :root {
+      --green: #1A420C;
+      --green-light: #2a5a18;
+      --amber: #DC851F;
+      --amber-light: #e9a04d;
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --text: #1c1c1c;
+      --text-muted: #6b6b6b;
+      --border: #e0ddd6;
+      --results-bg: #eae8e2;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111110;
+        --surface: #1c1c1a;
+        --text: #e8e6e1;
+        --text-muted: #8a8880;
+        --border: #2e2e2a;
+        --results-bg: #242422;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== Custom Titlebar (WCO) ===== */
+    .titlebar {
+      position: fixed;
+      top: env(titlebar-area-y, 0);
+      left: env(titlebar-area-x, 0);
+      width: env(titlebar-area-width, 100%);
+      height: env(titlebar-area-height, 36px);
+      display: flex;
+      align-items: center;
+      padding-inline: 1rem;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 1000;
+
+      /* New spec property for making this region draggable */
+      window-drag: move;
+    }
+
+    .titlebar-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 0.5rem;
+      fill: #fff;
+    }
+
+    /* Body offset when WCO is active */
+    @media (display-mode: window-controls-overlay) {
+      body {
+        padding-top: env(titlebar-area-height, 36px);
+      }
+    }
+
+    /* ===== Page Content ===== */
+    .content {
+      flex: 1;
+      display: grid;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      width: fit-content;
+      transition: opacity 0.2s ease;
+    }
+
+    .back-link:hover {
+      opacity: 0.85;
+    }
+
+    .section {
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      background: var(--surface);
+      box-shadow: 0 1px 3px rgba(26, 66, 12, 0.08);
+    }
+
+    .section h2 {
+      color: var(--green);
+      margin-bottom: 0.75rem;
+      font-size: 1.15rem;
+    }
+
+    .section p {
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+
+    .section code {
+      background: var(--results-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+
+    /* Drag test regions */
+    .drag-region {
+      padding: 1.25rem;
+      margin-top: 0.75rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: grab;
+      border: 2px dashed var(--border);
+      transition: border-color 0.2s ease;
+    }
+
+    .drag-region:hover {
+      border-color: var(--amber);
+    }
+
+    .drag-region.app-region-drag {
+      background: linear-gradient(135deg, rgba(220, 133, 31, 0.12), rgba(220, 133, 31, 0.05));
+      -webkit-app-region: drag;
+      app-region: drag;
+    }
+
+    .drag-region.window-drag-move {
+      background: linear-gradient(135deg, rgba(26, 66, 12, 0.12), rgba(26, 66, 12, 0.05));
+      window-drag: move;
+    }
+
+    .badge-supported {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.2em 0.55em;
+      border-radius: 6px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .badge-supported.yes {
+      background: rgba(26, 66, 12, 0.15);
+      color: var(--green);
+    }
+
+    .badge-supported.no {
+      background: rgba(180, 50, 50, 0.12);
+      color: #b43232;
+    }
+
+    .badge-supported.unknown {
+      background: var(--results-bg);
+      color: var(--text-muted);
+    }
+
+    .results {
+      margin-top: 1rem;
+      font-family: monospace;
+      background: var(--results-bg);
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+    }
+
+    .note {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-left: 3px solid var(--amber);
+      background: rgba(220, 133, 31, 0.06);
+      border-radius: 0 0.5rem 0.5rem 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom titlebar — only visible when WCO is active (installed PWA) -->
+  <div class="titlebar">
+    <svg class="titlebar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    WCO &amp; window-drag Demo
+  </div>
+
+  <div class="content">
+    <a class="back-link" href="../../index.html">⟵ Back to Demos</a>
+
+    <!-- Intro -->
+    <div class="section">
+      <h2>Window Controls Overlay + window-drag</h2>
+      <p>
+        This demo shows how to use <strong>Window Controls Overlay</strong> (WCO) to render a
+        custom titlebar in a PWA, and how to define draggable regions using the
+        <code>window-drag</code> CSS property (the new standard name for <code>app-region</code>).
+      </p>
+      <div class="note">
+        <strong>Note:</strong> WCO only activates when this page is installed as a PWA and launched
+        in its own window. In a regular browser tab the titlebar above is still visible but
+        window dragging will not function.
+      </div>
+    </div>
+
+    <!-- Section 1: app-region test -->
+    <div class="section">
+      <h2>Test 1: <code>app-region: drag</code>
+        <span class="badge-supported unknown" id="badge-app-region">checking…</span>
+      </h2>
+      <p>
+        This element uses the legacy <code>-webkit-app-region: drag</code> /
+        <code>app-region: drag</code> properties. Try dragging the window from the region below.
+      </p>
+      <div class="drag-region app-region-drag">
+        ☰ Drag here (app-region: drag)
+      </div>
+    </div>
+
+    <!-- Section 2: window-drag test -->
+    <div class="section">
+      <h2>Test 2: <code>window-drag: move</code>
+        <span class="badge-supported unknown" id="badge-window-drag">checking…</span>
+      </h2>
+      <p>
+        This element uses the new <code>window-drag: move</code> property. Try dragging the window
+        from the region below.
+      </p>
+      <div class="drag-region window-drag-move">
+        ☰ Drag here (window-drag: move)
+      </div>
+    </div>
+
+    <!-- Detection results -->
+    <div class="section">
+      <h2>Feature Detection Results</h2>
+      <p>CSS property support detected in this browser:</p>
+      <div class="results" id="detection-results">Running detection…</div>
+      <button onclick="runDetection()">Re-run Detection</button>
+    </div>
+  </div>
+
+  <script>
+    function detectCSSProperty(property, value) {
+      const el = document.createElement('div');
+      el.style.setProperty(property, value);
+      return el.style.getPropertyValue(property) === value;
+    }
+
+    function runDetection() {
+      const results = [];
+
+      // Test app-region (standard unprefixed)
+      const appRegion = detectCSSProperty('app-region', 'drag');
+      results.push('app-region: drag          → ' + (appRegion ? '✅ Supported' : '❌ Not supported'));
+
+      // Test -webkit-app-region (prefixed)
+      const el = document.createElement('div');
+      el.style.cssText = '-webkit-app-region: drag';
+      const webkitAppRegion = el.style.cssText.includes('app-region');
+      results.push('-webkit-app-region: drag  → ' + (webkitAppRegion ? '✅ Supported' : '❌ Not supported'));
+
+      // Test window-drag (new standard)
+      const windowDrag = detectCSSProperty('window-drag', 'move');
+      results.push('window-drag: move         → ' + (windowDrag ? '✅ Supported' : '❌ Not supported'));
+
+      // WCO display mode
+      const wcoActive = window.matchMedia('(display-mode: window-controls-overlay)').matches;
+      results.push('WCO display mode active   → ' + (wcoActive ? '✅ Yes' : '⚠️ No (install as PWA)'));
+
+      document.getElementById('detection-results').textContent = results.join('\n');
+
+      // Update badges
+      updateBadge('badge-app-region', appRegion || webkitAppRegion);
+      updateBadge('badge-window-drag', windowDrag);
+    }
+
+    function updateBadge(id, supported) {
+      const badge = document.getElementById(id);
+      if (supported) {
+        badge.textContent = 'Supported';
+        badge.className = 'badge-supported yes';
+      } else {
+        badge.textContent = 'Not supported';
+        badge.className = 'badge-supported no';
+      }
+    }
+
+    // Run on load
+    runDetection();
+
+    // Register service worker for installability
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('../../service-worker.js')
+          .then(reg => console.log('Service worker registered:', reg))
+          .catch(err => console.error('Service worker failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
