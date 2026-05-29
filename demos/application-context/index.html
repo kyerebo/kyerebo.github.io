@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Application Context Media Feature Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="../../manifest.json">
+
+  <!-- Theme color for UI -->
+  <meta name="theme-color" content="#1A420C">
+
+  <style>
+    :root {
+      --green: #1A420C;
+      --green-light: #2a5a18;
+      --amber: #DC851F;
+      --amber-light: #e9a04d;
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --text: #1c1c1c;
+      --text-muted: #6b6b6b;
+      --border: #e0ddd6;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111110;
+        --surface: #1c1c1a;
+        --text: #e8e6e1;
+        --text-muted: #8a8880;
+        --border: #2e2e2a;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    a { color: var(--green); }
+    a:hover { text-decoration: underline; }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--green); }
+
+    /* Info section */
+    .info-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .info-section h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .info-section p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .info-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-section code {
+      background: var(--border);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+
+    /* Demo panels */
+    .demo-area {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .panel {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      background: var(--surface);
+    }
+
+    .panel h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .panel p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .panel .status-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.3em 0.7em;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ========================================================
+       Browser context (non-installed) — shown by default,
+       hidden when in an installed app context.
+       ======================================================== */
+    .browser-only {
+      border-color: var(--amber);
+    }
+
+    .browser-only .status-badge {
+      background: var(--amber-light);
+      color: #fff;
+    }
+
+    /* ========================================================
+       App context (installed PWA) — hidden by default,
+       shown only when application-context matches.
+       ======================================================== */
+    .app-only {
+      display: none;
+      border-color: var(--green);
+    }
+
+    .app-only .status-badge {
+      background: var(--green);
+      color: #fff;
+    }
+
+    /* ========================================================
+       The application-context media feature:
+       Matches when the web content is running inside an
+       installed application context (e.g. installed PWA).
+       Unlike display-mode: standalone, this remains true
+       even if the user switches to fullscreen.
+       ======================================================== */
+    @media (application-context) {
+      .browser-only {
+        display: none;
+      }
+
+      .app-only {
+        display: block;
+      }
+    }
+
+    /* Install prompt */
+    .install-prompt {
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .install-prompt h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .install-prompt p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1rem;
+    }
+
+    .install-prompt img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    @media (application-context) {
+      .install-prompt {
+        display: none;
+      }
+    }
+
+    /* CSS snippet display */
+    .code-block {
+      background: var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      overflow-x: auto;
+      white-space: pre;
+      margin-top: 1rem;
+      color: var(--text);
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="../../index.html" class="back-link">← Back to demos</a>
+
+  <header>
+    <h1>Application Context Media Feature</h1>
+    <p>A CSS media feature that reliably indicates whether web content is running in an installed application context.</p>
+  </header>
+
+  <!-- Background / Explainer -->
+  <section class="info-section">
+    <h2>Why this feature?</h2>
+    <p>
+      Today, developers use <code>@media (display-mode: standalone)</code> to detect when content is running inside an installed PWA and apply app-specific styling. However, this approach breaks when the user switches to fullscreen — the media query stops matching because the display mode changes to <code>fullscreen</code>.
+    </p>
+    <p>
+      The <strong>application-context</strong> media feature solves this by providing a stable boolean signal: it matches whenever the web content is running inside an installed application, regardless of the current display mode. This means your app-specific styles remain applied whether the user is in standalone, fullscreen, minimal-ui, or any other mode.
+    </p>
+    <p>
+      Usage is simple:
+    </p>
+    <div class="code-block">@media (application-context) {
+  /* Styles that apply only in an installed app */
+  .app-nav { display: flex; }
+  .install-banner { display: none; }
+}</div>
+  </section>
+
+  <!-- Live Demo -->
+  <section class="demo-area">
+
+    <!-- Shown only in browser (non-installed) -->
+    <div class="panel browser-only">
+      <span class="status-badge">Browser Context</span>
+      <h3>👋 You're viewing this in a browser</h3>
+      <p>
+        This panel is only visible when you are <strong>not</strong> in an installed app context.
+        Install this site as a PWA to see the app-specific UI appear and this panel disappear.
+      </p>
+    </div>
+
+    <!-- Shown only in installed app context -->
+    <div class="panel app-only">
+      <span class="status-badge">App Context</span>
+      <h3>🎉 You're in the installed app!</h3>
+      <p>
+        This panel is only visible because <code>@media (application-context)</code> is matching.
+        Even if you switch to fullscreen, this panel will remain visible — unlike a
+        <code>display-mode: standalone</code> query which would stop matching.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- Install CTA (only shown in browser) -->
+  <div class="install-prompt">
+    <h3>Install this PWA to see the difference</h3>
+    <p>
+      Use your browser's install option (look for the install icon in the address bar or the "…" menu) to add this app. Once installed and launched, the "App Context" panel will appear and this prompt will disappear.
+    </p>
+  </div>
+
+  <footer>
+    <a href="../../index.html">kyerebo demos</a> · Application Context Media Feature
+  </footer>
+
+</body>
+</html>

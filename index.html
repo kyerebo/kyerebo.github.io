@@ -287,6 +287,10 @@
     .card:nth-child(3) {
       animation-delay: 0.16s;
     }
+
+    .card:nth-child(4) {
+      animation-delay: 0.24s;
+    }
   </style>
 </head>
 <body>
@@ -339,6 +343,17 @@
         <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
 
+      <a class="card" href="./demos/application-context/index.html">
+        <div class="card-icon amber">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/><path d="M9 6h6"/><path d="M9 10h6"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title" data-i18n="card4-title">Application Context</div>
+          <div class="card-desc" data-i18n="card4-desc">Demo of the <code>application-context</code> CSS media feature — a stable signal for detecting installed web app context regardless of display mode.</div>
+        </div>
+        <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+
     </div>
   </main>
 
@@ -358,6 +373,8 @@
         'card2-desc': 'ローカライズされたPWAマニフェストフィールドの探索 — 名前、アイコン、ショートカット、説明を多言語で表示。',
         'card3-title': 'WCO & window-drag',
         'card3-desc': 'Window Controls Overlayとカスタムドラッグ領域のテスト — <code>window-drag</code>と<code>app-region</code> CSSプロパティを使用。',
+        'card4-title': 'アプリケーション コンテキスト',
+        'card4-desc': '<code>application-context</code> CSSメディア機能のデモ — 表示モードに関係なく、インストール済みWebアプリのコンテキストを安定して検出するシグナル。',
         'footer-link': 'GitHubで見る',
       }
     };
