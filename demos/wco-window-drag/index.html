@@ -95,6 +95,7 @@
       align-items: center;
       gap: 0.4rem;
       padding: 0.5rem 1rem;
+      margin-top: 1.5rem;
       border-radius: 0.5rem;
       background: linear-gradient(135deg, var(--green), var(--green-light));
       color: #fff;
@@ -212,6 +213,57 @@
       line-height: 1.5;
     }
 
+    /* Inheritance test containers */
+    .inheritance-parent {
+      position: relative;
+      padding: 2rem;
+      margin-top: 0.75rem;
+      border-radius: 0.5rem;
+      border: 2px dashed var(--amber);
+      background: linear-gradient(135deg, rgba(220, 133, 31, 0.12), rgba(220, 133, 31, 0.05));
+      app-region: drag;
+      -webkit-app-region: drag;
+      min-height: 120px;
+    }
+
+    .inheritance-parent-label {
+      position: absolute;
+      top: 0.4rem;
+      left: 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+    }
+
+    .inheritance-child {
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      border: 2px solid var(--green);
+      background: var(--surface);
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .inheritance-child.overflow {
+      position: relative;
+      left: -80px;
+      width: calc(100% + 160px);
+    }
+
+    .computed-style-readout {
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 0.4rem;
+      background: var(--results-bg);
+      border: 1px solid var(--border);
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+
     button {
       margin-top: 0.5rem;
       padding: 0.5rem 1rem;
@@ -283,6 +335,46 @@
       </div>
     </div>
 
+    <!-- Section 3: app-region inheritance — child within parent bounds -->
+    <div class="section">
+      <h2>Test 3: Inheritance — Child Within Parent Bounds</h2>
+      <p>
+        The parent div has <code>app-region: drag</code>. The child div does <strong>not</strong>
+        set <code>app-region</code> and is fully contained within the parent. Without inheritance,
+        clicking the child still drags because the child is within the parent's draggable layout region.
+        With inheritance, the child would explicitly inherit <code>app-region: drag</code>.
+      </p>
+      <div class="inheritance-parent" id="test3-parent">
+        <span class="inheritance-parent-label">Parent — app-region: drag</span>
+        <div class="inheritance-child" id="test3-child">
+          Child div (no app-region set) — fully within parent
+        </div>
+      </div>
+      <div class="computed-style-readout" id="test3-computed">
+        getComputedStyle(child).appRegion: …
+      </div>
+    </div>
+
+    <!-- Section 4: app-region inheritance — child overflows outside parent -->
+    <div class="section">
+      <h2>Test 4: Inheritance — Child Overflows Outside Parent</h2>
+      <p>
+        Same setup as Test 3, but the child div <strong>overflows outside</strong> the parent's bounds.
+        Without inheritance, the overflowed portion of the child (outside the parent) should
+        <strong>not</strong> be draggable. With inheritance enabled, the entire child — including
+        the overflowed area — should be draggable because it inherits <code>app-region: drag</code>.
+      </p>
+      <div class="inheritance-parent" id="test4-parent">
+        <span class="inheritance-parent-label">Parent — app-region: drag</span>
+        <div class="inheritance-child overflow" id="test4-child">
+          Child div (no app-region set) — overflows outside parent
+        </div>
+      </div>
+      <div class="computed-style-readout" id="test4-computed">
+        getComputedStyle(child).appRegion: …
+      </div>
+    </div>
+
     <!-- Detection results -->
     <div class="section">
       <h2>Feature Detection Results</h2>
@@ -340,6 +432,22 @@
 
     // Run on load
     runDetection();
+
+    // Query and display computed app-region values for inheritance tests
+    function updateComputedStyles() {
+      const test3Child = document.getElementById('test3-child');
+      const test4Child = document.getElementById('test4-child');
+
+      const test3Value = getComputedStyle(test3Child).getPropertyValue('app-region').trim() || '(empty/not recognized)';
+      const test4Value = getComputedStyle(test4Child).getPropertyValue('app-region').trim() || '(empty/not recognized)';
+
+      document.getElementById('test3-computed').textContent =
+        'getComputedStyle(child).getPropertyValue("app-region"): ' + test3Value;
+      document.getElementById('test4-computed').textContent =
+        'getComputedStyle(child).getPropertyValue("app-region"): ' + test4Value;
+    }
+
+    updateComputedStyles();
 
     // Register service worker for installability
     if ('serviceWorker' in navigator) {
