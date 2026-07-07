@@ -175,8 +175,9 @@
        installed application context (e.g. installed PWA).
        Unlike display-mode: standalone, this remains true
        even if the user switches to fullscreen.
+       Values: "application" | "none"
        ======================================================== */
-    @media (application-context) {
+    @media (application-context: application) {
       .browser-only {
         display: none;
       }
@@ -214,7 +215,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    @media (application-context) {
+    @media (application-context: application) {
       .install-prompt {
         display: none;
       }
@@ -259,12 +260,12 @@
       Today, developers use <code>@media (display-mode: standalone)</code> to detect when content is running inside an installed PWA and apply app-specific styling. However, this approach breaks when the user switches to fullscreen — the media query stops matching because the display mode changes to <code>fullscreen</code>.
     </p>
     <p>
-      The <strong>application-context</strong> media feature solves this by providing a stable boolean signal: it matches whenever the web content is running inside an installed application, regardless of the current display mode. This means your app-specific styles remain applied whether the user is in standalone, fullscreen, minimal-ui, or any other mode.
+      The <strong>application-context</strong> media feature solves this by providing a stable enum signal with values <code>application</code> or <code>none</code>: it evaluates to <code>application</code> whenever the web content is running inside an installed application, regardless of the current display mode. This means your app-specific styles remain applied whether the user is in standalone, fullscreen, minimal-ui, or any other mode.
     </p>
     <p>
       Usage is simple:
     </p>
-    <div class="code-block">@media (application-context) {
+    <div class="code-block">@media (application-context: application) {
   /* Styles that apply only in an installed app */
   .app-nav { display: flex; }
   .install-banner { display: none; }
@@ -289,7 +290,7 @@
       <span class="status-badge">App Context</span>
       <h3>🎉 You're in the installed app!</h3>
       <p>
-        This panel is only visible because <code>@media (application-context)</code> is matching.
+        This panel is only visible because <code>@media (application-context: application)</code> is matching.
         Even if you switch to fullscreen, this panel will remain visible — unlike a
         <code>display-mode: standalone</code> query which would stop matching.
       </p>
