@@ -291,6 +291,10 @@
     .card:nth-child(4) {
       animation-delay: 0.24s;
     }
+
+    .card:nth-child(5) {
+      animation-delay: 0.32s;
+    }
   </style>
 </head>
 <body>
@@ -354,6 +358,17 @@
         <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
 
+      <a class="card" href="./demos/web-haptics/index.html">
+        <div class="card-icon green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h3l2-6 4 14 3-9 2 4h6"/></svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title" data-i18n="card5-title">Web Haptics API</div>
+          <div class="card-desc" data-i18n="card5-desc">Testing the proposed Web Haptics API — imperative <code>navigator.playHaptics()</code> effects and the declarative CSS <code>@haptic</code> at-rule.</div>
+        </div>
+        <svg class="card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+
     </div>
   </main>
 
@@ -375,6 +390,8 @@
         'card3-desc': 'Window Controls Overlayとカスタムドラッグ領域のテスト — <code>window-drag</code>と<code>app-region</code> CSSプロパティを使用。',
         'card4-title': 'アプリケーション コンテキスト',
         'card4-desc': '<code>application-context</code> CSSメディア機能のデモ — 表示モードに関係なく、インストール済みWebアプリのコンテキストを安定して検出するシグナル。',
+        'card5-title': 'Web Haptics API',
+        'card5-desc': '提案中のWeb Haptics APIのテスト — 命令型の<code>navigator.playHaptics()</code>エフェクトと宣言型のCSS <code>@haptic</code> at-rule。',
         'footer-link': 'GitHubで見る',
       }
     };

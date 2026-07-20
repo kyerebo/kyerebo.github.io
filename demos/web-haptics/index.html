@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Web Haptics API Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="../../manifest.json">
+
+  <!-- Theme color for UI -->
+  <meta name="theme-color" content="#1A420C">
+
+  <style>
+    :root {
+      --green: #1A420C;
+      --green-light: #2a5a18;
+      --amber: #DC851F;
+      --amber-light: #e9a04d;
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --surface-hover: #fafaf7;
+      --text: #1c1c1c;
+      --text-muted: #6b6b6b;
+      --border: #e0ddd6;
+      --shadow: rgba(26, 66, 12, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111110;
+        --surface: #1c1c1a;
+        --surface-hover: #242422;
+        --text: #e8e6e1;
+        --text-muted: #8a8880;
+        --border: #2e2e2a;
+        --shadow: rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    a { color: var(--green); }
+    a:hover { text-decoration: underline; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--green); }
+
+    header { margin-bottom: 2rem; }
+
+    header h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    header h1 .accent {
+      background: linear-gradient(135deg, var(--green), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    code {
+      background: var(--border);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.85em;
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    /* Support banner */
+    .support-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+    }
+
+    .support-banner .dot {
+      flex-shrink: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 0.45rem;
+    }
+
+    .support-banner.supported {
+      background: rgba(26, 66, 12, 0.06);
+      border-color: var(--green);
+    }
+    .support-banner.supported .dot { background: var(--green); }
+
+    .support-banner.unsupported {
+      background: rgba(220, 133, 31, 0.08);
+      border-color: var(--amber);
+    }
+    .support-banner.unsupported .dot { background: var(--amber); }
+
+    .support-banner strong { display: block; margin-bottom: 0.15rem; }
+    .support-banner span { color: var(--text-muted); }
+
+    /* Sections */
+    section { margin-bottom: 2.5rem; }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--amber);
+      margin-bottom: 0.4rem;
+    }
+
+    section > h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    section > .lead {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px var(--shadow);
+    }
+
+    .panel h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .panel .panel-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .panel pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      margin-top: 1rem;
+    }
+
+    .panel pre code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+      color: var(--text);
+    }
+
+    /* ---- Imperative: effect buttons ---- */
+    .effect-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .effect-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      text-align: left;
+      padding: 1rem 1.1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .effect-btn:hover {
+      border-color: var(--amber-light);
+      box-shadow: 0 4px 14px var(--shadow);
+    }
+
+    .effect-btn:active {
+      transform: scale(0.96);
+      border-color: var(--amber);
+    }
+
+    .effect-btn .effect-name {
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+      color: var(--green);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .effect-btn .effect-name { color: var(--amber-light); }
+    }
+
+    .effect-btn .effect-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ---- Intensity control ---- */
+    .intensity-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .intensity-row label {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .intensity-row input[type="range"] {
+      flex: 1;
+      min-width: 160px;
+      accent-color: var(--green);
+    }
+
+    .intensity-value {
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+      min-width: 3ch;
+      text-align: right;
+      color: var(--amber);
+      font-weight: 600;
+    }
+
+    /* Live log */
+    .log {
+      margin-top: 1.25rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    .log .entry { white-space: pre-wrap; }
+    .log .entry.head { color: var(--green); }
+    @media (prefers-color-scheme: dark) {
+      .log .entry.head { color: var(--amber-light); }
+    }
+
+    /* ---- Declarative examples ---- */
+    .add-to-cart {
+      padding: 0.85rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #fff;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: scale 0.1s ease;
+    }
+
+    .add-to-cart:active {
+      scale: 0.95;
+      /* Fires when the button is pressed. */
+      @haptic align 0.8;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    .toggle-switch input { position: absolute; opacity: 0; }
+
+    .toggle-track {
+      width: 50px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--border);
+      position: relative;
+      transition: background 0.2s ease;
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .toggle-switch input:checked + .toggle-track {
+      background: var(--green);
+      /* Fires each time the switch turns on. */
+      @haptic tick;
+    }
+
+    .toggle-switch input:not(:checked) + .toggle-track {
+      /* Fires each time the switch turns off — per-rule tracking
+         means on and off both fire without collision. */
+      @haptic tick;
+    }
+
+    .toggle-switch input:checked + .toggle-track::after {
+      transform: translateX(22px);
+    }
+
+    /* Text field focus hint */
+    .field {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .field:focus {
+      outline: none;
+      border-color: var(--green);
+      /* A light cue when the field becomes interactive. */
+      @haptic hint 0.5;
+    }
+
+    /* Validation edge */
+    .field.invalid {
+      border-color: #c0392b;
+      /* A heavy boundary signal on validation failure. */
+      @haptic edge;
+    }
+
+    /* Scroll-snap carousel */
+    .carousel {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel > .slide {
+      flex: 0 0 80%;
+      scroll-snap-align: center;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .carousel > .slide:nth-child(odd) {
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+    }
+    .carousel > .slide:nth-child(even) {
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+    }
+
+    /* Fires when a slide becomes the snapped child. :snapped is a
+       CSS Scroll Snap 2 draft pseudo-class; falls back gracefully. */
+    .carousel > .slide:snapped {
+      @haptic tick 0.5;
+    }
+
+    .demo-inline {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      padding: 0.6rem 1.1rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: inherit;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { border-color: var(--amber-light); }
+
+    /* Bounce keyframes for example 5. */
+    @keyframes bounce-settle {
+      0%   { transform: translateY(-100%); }
+      40%  { transform: translateY(0);    @haptic edge; }
+      60%  { transform: translateY(-20%); }
+      100% { transform: translateY(0);    @haptic align 0.5; }
+    }
+    .bounce-play { animation: bounce-settle 0.6s ease; }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem 0 0;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--green); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../../index.html">&larr; All demos</a>
+
+  <header>
+    <h1><span class="accent">Web Haptics</span> API</h1>
+    <p>Test bed for the proposed Web Haptics API — a semantic, cross-platform
+       interface for tactile feedback. Two mechanisms: the imperative
+       <code>navigator.playHaptics(effect, intensity)</code> and the declarative
+       CSS <code>@haptic</code> at-rule.</p>
+  </header>
+
+  <div id="support" class="support-banner unsupported">
+    <span class="dot"></span>
+    <div>
+      <strong id="support-title">Checking for API support&hellip;</strong>
+      <span id="support-detail"></span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IMPERATIVE API
+       ============================================================ -->
+  <section>
+    <p class="section-label">Imperative API (JavaScript)</p>
+    <h2>navigator.playHaptics()</h2>
+    <p class="lead">
+      Each button calls <code>navigator.playHaptics(effect, intensity)</code>
+      with one of the four predefined effects. Requires sticky user activation —
+      a click satisfies that. If the last input device isn't haptics-capable,
+      nothing plays (and, by design, the API returns <code>undefined</code> either way).
+    </p>
+
+    <div class="panel">
+      <div class="effect-grid">
+        <button class="effect-btn" data-effect="hint">
+          <span class="effect-name">hint</span>
+          <span class="effect-desc">Light, subtle cue that something is interactive.</span>
+        </button>
+        <button class="effect-btn" data-effect="edge">
+          <span class="effect-name">edge</span>
+          <span class="effect-desc">Heavy boundary signal — end of range or a limit.</span>
+        </button>
+        <button class="effect-btn" data-effect="tick">
+          <span class="effect-name">tick</span>
+          <span class="effect-desc">Firm pulse marking a discrete change.</span>
+        </button>
+        <button class="effect-btn" data-effect="align">
+          <span class="effect-name">align</span>
+          <span class="effect-desc">Crisp confirmation of locking into place.</span>
+        </button>
+      </div>
+
+      <div class="intensity-row">
+        <label for="intensity">Intensity</label>
+        <input type="range" id="intensity" min="0" max="1" step="0.05" value="1">
+        <span class="intensity-value" id="intensity-value">1.00</span>
+      </div>
+
+      <div class="log" id="log" aria-live="polite">
+        <div class="entry head">// Activity log</div>
+      </div>
+
+      <pre><code>navigator.playHaptics("align", 0.8);</code></pre>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       DECLARATIVE API
+       ============================================================ -->
+  <section>
+    <p class="section-label">Declarative API (CSS)</p>
+    <h2>The @haptic at-rule</h2>
+    <p class="lead">
+      The nested <code>@haptic &lt;effect&gt; &lt;intensity&gt;?</code> at-rule fires
+      once when its containing rule starts matching an element — no JavaScript in
+      the critical path. Interact with the examples below to feel each one.
+    </p>
+
+    <!-- Add to cart -->
+    <div class="panel">
+      <h3>1. Press confirmation</h3>
+      <p class="panel-desc">A tactile <code>align</code> when an "Add to cart"
+         button is pressed, fired from <code>:active</code>.</p>
+      <button class="add-to-cart">Add to cart</button>
+      <pre><code>.add-to-cart:active {
+  scale: 0.95;
+  @haptic align 0.8;
+}</code></pre>
+    </div>
+
+    <!-- Toggle switch -->
+    <div class="panel">
+      <h3>2. Toggle switch</h3>
+      <p class="panel-desc">A <code>tick</code> on both on and off. Per-rule
+         tracking means the two transitions fire independently — no collision.</p>
+      <label class="toggle-switch">
+        <input type="checkbox">
+        <span class="toggle-track"></span>
+        <span>Enable feature</span>
+      </label>
+      <pre><code>input:checked + .toggle-track       { @haptic tick; }
+input:not(:checked) + .toggle-track { @haptic tick; }</code></pre>
+    </div>
+
+    <!-- Focus hint + validation edge -->
+    <div class="panel">
+      <h3>3. Focus hint &amp; validation edge</h3>
+      <p class="panel-desc">A light <code>hint</code> when the field gains focus,
+         and a heavy <code>edge</code> if validation fails. Type something that
+         isn't an email and press <em>Validate</em>.</p>
+      <div class="demo-inline" style="margin-bottom:0.75rem">
+        <input type="email" class="field" placeholder="you@example.com">
+      </div>
+      <div class="demo-inline">
+        <button class="btn-secondary" id="validate-btn">Validate</button>
+      </div>
+      <pre><code>.field:focus   { @haptic hint 0.5; }
+.field.invalid { @haptic edge; }</code></pre>
+    </div>
+
+    <!-- Carousel -->
+    <div class="panel">
+      <h3>4. Scroll-snap carousel</h3>
+      <p class="panel-desc">A <code>tick</code> as each slide snaps into place,
+         using the draft <code>:snapped</code> pseudo-class. Swipe or drag
+         horizontally.</p>
+      <div class="carousel">
+        <div class="slide">1</div>
+        <div class="slide">2</div>
+        <div class="slide">3</div>
+        <div class="slide">4</div>
+      </div>
+      <pre><code>.carousel > .slide:snapped {
+  @haptic tick 0.5;
+}</code></pre>
+    </div>
+
+    <!-- Keyframes -->
+    <div class="panel">
+      <h3>5. Keyframe choreography</h3>
+      <p class="panel-desc"><code>@haptic</code> nested inside
+         <code>@keyframes</code> enables multi-step haptic choreography — an
+         <code>edge</code> at impact, then a softer <code>align</code> on settle.</p>
+      <div class="demo-inline">
+        <button class="btn-secondary" id="bounce-btn">Play bounce</button>
+        <div id="bounce-box" style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--amber),var(--amber-light))"></div>
+      </div>
+      <pre><code>@keyframes bounce-settle {
+  0%   { transform: translateY(-100%); }
+  40%  { transform: translateY(0);   @haptic edge; }
+  60%  { transform: translateY(-20%); }
+  100% { transform: translateY(0);   @haptic align 0.5; }
+}</code></pre>
+    </div>
+  </section>
+
+  <footer>
+    Based on the Web Haptics API explainer.
+    &middot; <a href="../../index.html">Back to demos</a>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const EFFECTS = ['hint', 'edge', 'tick', 'align'];
+      const supported = typeof navigator.playHaptics === 'function';
+
+      // ---- Support banner ------------------------------------------------
+      const banner = document.getElementById('support');
+      const title = document.getElementById('support-title');
+      const detail = document.getElementById('support-detail');
+
+      if (supported) {
+        banner.className = 'support-banner supported';
+        title.textContent = 'navigator.playHaptics() is available';
+        detail.textContent = 'The imperative API is present in this browser. ' +
+          'Whether a haptic actually plays depends on your most recent input device.';
+      } else {
+        banner.className = 'support-banner unsupported';
+        title.textContent = 'navigator.playHaptics() is not available';
+        detail.textContent = 'This browser does not implement the Web Haptics API yet. ' +
+          'The buttons and CSS examples are wired up and will work once support ships.';
+      }
+
+      // ---- Logging -------------------------------------------------------
+      const log = document.getElementById('log');
+      function addLog(msg) {
+        const el = document.createElement('div');
+        el.className = 'entry';
+        const t = new Date().toLocaleTimeString();
+        el.textContent = '[' + t + '] ' + msg;
+        log.appendChild(el);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      // ---- Play helper ---------------------------------------------------
+      function play(effect, intensity) {
+        if (!EFFECTS.includes(effect)) return;
+        if (supported) {
+          try {
+            navigator.playHaptics(effect, intensity);
+            addLog('playHaptics("' + effect + '", ' + intensity.toFixed(2) + ')');
+          } catch (err) {
+            addLog('Error: ' + err.message);
+          }
+        } else {
+          addLog('(simulated) playHaptics("' + effect + '", ' + intensity.toFixed(2) + ') — API unavailable');
+        }
+      }
+
+      // ---- Intensity slider ---------------------------------------------
+      const intensity = document.getElementById('intensity');
+      const intensityValue = document.getElementById('intensity-value');
+      intensity.addEventListener('input', () => {
+        intensityValue.textContent = Number(intensity.value).toFixed(2);
+      });
+
+      // ---- Effect buttons -----------------------------------------------
+      document.querySelectorAll('.effect-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          play(btn.dataset.effect, Number(intensity.value));
+        });
+      });
+
+      // ---- Validation edge (example 3) ----------------------------------
+      const emailField = document.querySelector('.field[type="email"]');
+      const validateBtn = document.getElementById('validate-btn');
+      validateBtn.addEventListener('click', () => {
+        const valid = emailField.checkValidity() && emailField.value.trim() !== '';
+        // Remove first so re-validating an invalid value re-triggers the
+        // not-matching -> matching transition that fires @haptic edge.
+        emailField.classList.remove('invalid');
+        if (!valid) {
+          void emailField.offsetWidth; // force reflow
+          emailField.classList.add('invalid');
+          addLog('Validation failed → @haptic edge should fire');
+        } else {
+          addLog('Validation passed');
+        }
+      });
+
+      // ---- Keyframe bounce (example 5) ----------------------------------
+      const bounceBtn = document.getElementById('bounce-btn');
+      const bounceBox = document.getElementById('bounce-box');
+      bounceBtn.addEventListener('click', () => {
+        bounceBox.classList.remove('bounce-play');
+        void bounceBox.offsetWidth; // restart animation
+        bounceBox.classList.add('bounce-play');
+        addLog('bounce-settle animation → @haptic edge, then @haptic align 0.5');
+      });
+
+      // ---- Service worker (consistent with other demos) ------------------
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('../../service-worker.js').catch(() => {});
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
