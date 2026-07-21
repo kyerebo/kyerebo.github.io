@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>AccentColor Taint Test</title>
+  <title>AccentColor / AccentColorText Demo</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <!-- PWA manifest -->
@@ -16,159 +16,386 @@
       --green: #1A420C;
       --green-light: #2a5a18;
       --amber: #DC851F;
+      --amber-light: #e9a04d;
       --bg: #f5f5f0;
       --surface: #ffffff;
+      --surface-hover: #fafaf7;
       --text: #1c1c1c;
       --text-muted: #6b6b6b;
       --border: #e0ddd6;
-      --results-bg: #eae8e2;
-      --sys-accent: AccentColor;
+      --shadow: rgba(26, 66, 12, 0.08);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #111110;
         --surface: #1c1c1a;
+        --surface-hover: #242422;
         --text: #e8e6e1;
         --text-muted: #8a8880;
         --border: #2e2e2a;
-        --results-bg: #242422;
+        --shadow: rgba(0, 0, 0, 0.3);
       }
     }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      display: grid;
-      gap: 2rem;
-      padding: 2rem;
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.6;
     }
 
-    .section {
+    a { color: var(--green); }
+    a:hover { text-decoration: underline; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: var(--green); }
+
+    header { margin-bottom: 2rem; }
+
+    header h1 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    header h1 .accent {
+      background: linear-gradient(135deg, var(--green), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    code {
+      background: var(--border);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.85em;
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    /* Explainer callout */
+    .explainer {
       border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.25rem;
+      border-left: 3px solid var(--amber);
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      background: rgba(220, 133, 31, 0.06);
+    }
+
+    .explainer strong { color: var(--amber); }
+    .explainer p { color: var(--text-muted); margin-bottom: 0.6rem; }
+    .explainer p:last-child { margin-bottom: 0; }
+    .explainer .kw {
+      color: var(--text);
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-weight: 600;
+    }
+
+    /* Sections */
+    section { margin-bottom: 2.5rem; }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--amber);
+      margin-bottom: 0.4rem;
+    }
+
+    section > h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    section > .lead {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .panel {
       background: var(--surface);
-      box-shadow: 0 1px 3px rgba(26, 66, 12, 0.08);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px var(--shadow);
     }
 
-    .section h2 {
-      color: var(--green);
+    /* Native form controls tinted by accent-color */
+    .controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
+    .controls label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .controls input[type="checkbox"],
+    .controls input[type="radio"] {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    /* The demo box: uses the CSS system colors */
     .accent-div {
       background-color: AccentColor;
       color: AccentColorText;
-      padding: 1rem;
-      margin-top: 1rem;
-      border-radius: 0.5rem;
-      transition: background-color 1s linear;
-    }
-
-    .red-div {
-      background-color: red;
-      padding: 1rem;
-      margin-top: 1rem;
-      border-radius: 0.5rem;
-    }
-
-    .animate {
-      animation: pulseColor 2s infinite alternate;
-    }
-
-    .animate-control {
-      animation: pulseControl 2s infinite alternate;
-    }
-
-    @keyframes pulseColor {
-      0% { background-color: AccentColor; }
-      100% { background-color: #ff00ff; }
-    }
-
-    @keyframes pulseControl {
-      0% { background-color: #00ffff; }
-      100% { background-color: #ff00ff; }
-    }
-
-    button {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      border: none;
-      background: linear-gradient(135deg, var(--green), var(--green-light));
-      color: white;
-      cursor: pointer;
+      padding: 1.4rem 1.25rem;
+      border-radius: 10px;
       font-weight: 600;
-      transition: opacity 0.2s ease;
+      font-size: 1rem;
+      text-align: center;
+      transition: background-color 0.35s ease, color 0.35s ease;
     }
 
-    button:hover {
-      opacity: 0.85;
+    /* Accent-color picker buttons */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+      gap: 0.6rem;
+      margin-top: 1.25rem;
     }
 
-    .results {
-      margin-top: 1rem;
-      font-family: monospace;
-      background: var(--results-bg);
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border);
+    .swatch-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 0.5rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
       color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.72rem;
+      transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
+
+    .swatch-btn:hover {
+      border-color: var(--amber-light);
+      box-shadow: 0 4px 14px var(--shadow);
+    }
+
+    .swatch-btn:active { transform: scale(0.95); }
+
+    .swatch-btn.selected {
+      border-color: var(--green);
+      box-shadow: 0 0 0 1px var(--green) inset;
+    }
+    @media (prefers-color-scheme: dark) {
+      .swatch-btn.selected { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber) inset; }
+    }
+
+    .swatch-chip {
+      width: 100%;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .swatch-name {
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+      color: var(--text-muted);
+    }
+
+    /* Results readout */
+    .results {
+      margin-top: 1.25rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: 'Cascadia Code', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+    }
+
+    button.query-btn {
+      margin-top: 1.25rem;
+      padding: 0.6rem 1.1rem;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #fff;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s ease, scale 0.1s ease;
+    }
+
+    button.query-btn:hover { opacity: 0.9; }
+    button.query-btn:active { scale: 0.96; }
   </style>
 </head>
 <body>
-  <a href="../../index.html" style="display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:.5rem;background:linear-gradient(135deg,var(--green),var(--green-light));color:#fff;text-decoration:none;font-weight:600;width:fit-content;transition:opacity .2s ease;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">⟵ Back to Demos</a>
 
-  <div class="section" style="accent-color: red;">
-    <h2>Section 1: accent-color: red</h2>
-    <form>
-      <label><input type="checkbox"> Checkbox</label>
-      <label><input type="radio" name="r1"> Radio 1</label>
-      <label><input type="radio" name="r1"> Radio 2</label>
-      <input type="range">
-    </form>
-    <div class="red-div" id="static-red">This text background is styled with red.</div>
-    <button onclick="queryColor('static-red')">Get Computed Color</button>
+  <a class="back-link" href="../../index.html">&larr; All demos</a>
+
+  <header>
+    <h1><span class="accent">AccentColor</span> &amp; AccentColorText</h1>
+    <p>How the CSS system-color keywords render the accent color of a page —
+       both the OS-provided default and per-element overrides.</p>
+  </header>
+
+  <div class="explainer">
+    <p><span class="kw">AccentColor</span> and <span class="kw">AccentColorText</span>
+       are CSS <strong>system color</strong> keywords. <span class="kw">AccentColor</span>
+       is the accent color of the page, and <span class="kw">AccentColorText</span>
+       is a color guaranteed to be legible when painted on top of it.</p>
+    <p>When the <span class="kw">accent-color</span> property is left at its default
+       (<span class="kw">auto</span>), these keywords resolve to the
+       <strong>operating system's accent color</strong> — the same tint used by
+       native checkboxes, radios, and range sliders. When
+       <span class="kw">accent-color</span> is set to any explicit value, the
+       keywords resolve to <strong>that color</strong> instead, and
+       <span class="kw">AccentColorText</span> automatically flips between a light
+       or dark contrasting color to stay readable.</p>
   </div>
 
-  <div class="section" style="accent-color: auto;">
-    <h2>Section 2: accent-color: auto (system)</h2>
-    <form>
-      <label><input type="checkbox"> Checkbox</label>
-      <label><input type="radio" name="r2"> Radio 1</label>
-      <label><input type="radio" name="r2"> Radio 2</label>
-      <input type="range">
-    </form>
-    <div class="accent-div" id="system-auto">This text uses AccentColorText and background uses AccentColor.</div>
-    <button onclick="queryColor('system-auto')">Get Computed Color</button>
-  </div>
+  <!-- ============================================================
+       SECTION 1 — explicit accent-color overrides
+       ============================================================ -->
+  <section>
+    <p class="section-label">Explicit override</p>
+    <h2>Section 1: Setting <code>accent-color</code></h2>
+    <p class="lead">
+      Pick a color below to set <code>accent-color</code> on this section. Watch
+      the native controls <em>and</em> the AccentColor box update together. A few
+      options are intentionally dark so you can confirm the text flips to a light
+      contrasting color.
+    </p>
 
-  <div class="section">
-    <h2>Section 3: Control Animation (No AccentColor)</h2>
-    <div class="red-div animate-control" id="control-div">Animating #00ffff → #ff00ff (no AccentColor)</div>
-    <button onclick="queryColor('control-div')">Query mid-animation</button>
-  </div>
+    <div class="panel" id="section1" style="accent-color: #4169E1;">
+      <div class="controls">
+        <label><input type="checkbox" checked> Checkbox</label>
+        <label><input type="radio" name="r1" checked> Radio 1</label>
+        <label><input type="radio" name="r1"> Radio 2</label>
+        <input type="range" aria-label="Sample range">
+      </div>
 
-  <div class="section">
-    <h2>Section 4: Animation Taint Test (AccentColor)</h2>
-    <div class="accent-div animate" id="animated-div">Animating AccentColor → #ff00ff</div>
-    <button onclick="queryColor('animated-div')">Query mid-animation</button>
-  </div>
+      <div class="accent-div" id="section1-swatch">
+        This box's background is AccentColor and its text is AccentColorText.
+      </div>
 
-  <div class="results" id="output">Results will appear here.</div>
+      <div class="swatch-grid" id="swatch-grid"></div>
+
+      <button class="query-btn" onclick="queryColor('section1-swatch', 'section1-results')">
+        Get computed colors
+      </button>
+      <div class="results" id="section1-results">Computed colors will appear here.</div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECTION 2 — system default (auto)
+       ============================================================ -->
+  <section>
+    <p class="section-label">System default</p>
+    <h2>Section 2: <code>accent-color: auto</code></h2>
+    <p class="lead">
+      With <code>accent-color: auto</code>, the keywords resolve to your operating
+      system's accent color. Change your OS accent color and reload to see the
+      AccentColor box and native controls follow it.
+    </p>
+
+    <div class="panel" style="accent-color: auto;">
+      <div class="controls">
+        <label><input type="checkbox" checked> Checkbox</label>
+        <label><input type="radio" name="r2" checked> Radio 1</label>
+        <label><input type="radio" name="r2"> Radio 2</label>
+        <input type="range" aria-label="Sample range">
+      </div>
+
+      <div class="accent-div" id="system-auto">
+        This box's background is AccentColor and its text is AccentColorText.
+      </div>
+
+      <button class="query-btn" onclick="queryColor('system-auto', 'section2-results')">
+        Get computed colors
+      </button>
+      <div class="results" id="section2-results">Computed colors will appear here.</div>
+    </div>
+  </section>
 
   <script>
-    const output = document.getElementById('output');
+    // Eight accent-color options — a mix of light and dark to exercise
+    // AccentColorText's automatic contrast selection.
+    const ACCENT_COLORS = [
+      { name: 'Royal Blue',  value: '#4169E1' },
+      { name: 'Crimson',     value: '#DC143C' },
+      { name: 'Goldenrod',   value: '#DAA520' },
+      { name: 'Teal',        value: '#008080' },
+      { name: 'Indigo',      value: '#3A0CA3' }, // dark
+      { name: 'Forest',      value: '#14532D' }, // dark
+      { name: 'Hot Pink',    value: '#FF5CA8' },
+      { name: 'Charcoal',    value: '#1A1A1A' }, // dark
+    ];
 
-    function queryColor(id) {
-      const el = document.getElementById(id);
+    const section1 = document.getElementById('section1');
+    const grid = document.getElementById('swatch-grid');
+
+    function selectAccent(btn, value) {
+      section1.style.accentColor = value;
+      grid.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    ACCENT_COLORS.forEach((c, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'swatch-btn' + (i === 0 ? ' selected' : '');
+      btn.type = 'button';
+      btn.innerHTML =
+        `<span class="swatch-chip" style="background:${c.value}"></span>` +
+        `<span class="swatch-name">${c.value}</span>`;
+      btn.title = c.name;
+      btn.addEventListener('click', () => selectAccent(btn, c.value));
+      grid.appendChild(btn);
+    });
+
+    function queryColor(elId, outId) {
+      const el = document.getElementById(elId);
+      const out = document.getElementById(outId);
       try {
-        const color = getComputedStyle(el).backgroundColor;
-        output.textContent = `${id}: ${color}`;
+        const cs = getComputedStyle(el);
+        out.textContent =
+          'AccentColor      (background): ' + cs.backgroundColor + '\n' +
+          'AccentColorText  (text)      : ' + cs.color;
       } catch (err) {
-        output.textContent = `${id}: Error (${err.message})`;
+        out.textContent = 'Error (' + err.message + ')';
       }
     }
 
@@ -181,204 +408,5 @@
       });
     }
   </script>
-    <div class="section">
-    <h2>Section 5: Canvas Paint + Read Test (AccentColor)</h2>
-    <canvas id="accentCanvas" width="300" height="100" style="border:1px solid #ccc; border-radius:0.5rem;"></canvas>
-    <div>
-      <button onclick="paintAccentCanvas()">Paint with AccentColor</button>
-      <button onclick="readCanvasImageData()">getImageData()</button>
-      <button onclick="readCanvasDataURL()">toDataURL()</button>
-      <button onclick="readCanvasBlob()">toBlob()</button>
-    </div>
-    <div class="results" id="canvasResults"></div>
-  </div>
-
-  <script>
-    const canvas = document.getElementById('accentCanvas');
-    const ctx = canvas.getContext('2d');
-    const canvasOutput = document.getElementById('canvasResults');
-
-    function logCanvasResult(msg) {
-      canvasOutput.textContent = msg;
-    }
-
-    function paintAccentCanvas() {
-      try {
-        ctx.fillStyle = 'AccentColor';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'black';
-        ctx.font = '16px sans-serif';
-        ctx.fillText('Painted AccentColor', 20, 55);
-        logCanvasResult('Canvas painted with AccentColor successfully.');
-      } catch (e) {
-        logCanvasResult('Painting failed: ' + e);
-      }
-    }
-
-    function readCanvasImageData() {
-      try {
-        const data = ctx.getImageData(0, 0, 1, 1);
-        logCanvasResult('getImageData() succeeded. Sample pixel: ' +
-          `[${data.data[0]}, ${data.data[1]}, ${data.data[2]}, ${data.data[3]}]`);
-      } catch (e) {
-        logCanvasResult('getImageData() threw: ' + e);
-      }
-    }
-
-    function readCanvasDataURL() {
-      try {
-        const url = canvas.toDataURL();
-        logCanvasResult('toDataURL() succeeded. URL length=' + url.length);
-      } catch (e) {
-        logCanvasResult('toDataURL() threw: ' + e);
-      }
-    }
-
-    function readCanvasBlob() {
-      try {
-        canvas.toBlob(blob => {
-          if (blob) {
-            logCanvasResult('toBlob() succeeded. Blob size=' + blob.size + ' bytes');
-          } else {
-            logCanvasResult('toBlob() callback returned null (possibly tainted).');
-          }
-        });
-      } catch (e) {
-        logCanvasResult('toBlob() threw: ' + e);
-      }
-    }
-  </script>
-  <div class="section">
-  <h2>Section 6: Custom Property Substitution Taint Test</h2>
-
-  <p>
-    Tests whether tainting from <code>AccentColor</code> propagates through a
-    *registered* custom property (<code>--accent</code>) into an
-    *unregistered* property (<code>--my-color</code>), then into actual style properties.
-  </p>
-
-  <style>
-    @property --accent {
-      syntax: "<color>";
-      inherits: true;
-      initial-value: #0f0;
-    }
-
-    #taint-subst-root {
-      --accent: AccentColor;
-      --my-color: var(--accent);
-      background-color: var(--my-color);
-      color: AccentColorText;
-      padding: 1rem;
-      border-radius: 0.5rem;
-    }
-  </style>
-
-  <div id="taint-subst-root">
-    This element uses:  
-    <ul>
-      <li><code>--accent: AccentColor</code></li>
-      <li><code>--my-color: var(--accent)</code></li>
-      <li><code>background-color: var(--my-color)</code></li>
-      <li><code>color: AccentColorText</code></li>
-    </ul>
-  </div>
-
-  <button onclick="runTaintSubstitutionTest()">Dump values</button>
-
-  <div class="results" id="subst-results"></div>
-</div>
-
-<script>
-function runTaintSubstitutionTest() {
-  const root = document.getElementById('taint-subst-root');
-  const cs = getComputedStyle(root);
-  const out = document.getElementById('subst-results');
-
-  try {
-    const bg = cs.backgroundColor;
-    const accent = cs.getPropertyValue('--accent');
-    const my = cs.getPropertyValue('--my-color');
-
-    out.textContent =
-      'background-color: ' + bg + '\n' +
-      '--accent: ' + accent + '\n' +
-      '--my-color: ' + my;
-  } catch (e) {
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-</script>
-<div class="section">
-  <h2>Section 7: Complex Expression Taint Test (if(), mixing, exfiltration)</h2>
-
-  <p>
-    Tests whether <code>if()</code> logic, numeric coercion attempts, and
-    assigning tainted values into non-color properties preserve tainting.
-  </p>
-
-  <style>
-    #complex-taint {
-      /* Derive a tainted value through expression logic */
-      --raw-accent: AccentColor;
-
-      /* Try to coerce to number-like values */
-      --conditional: if(var(--raw-accent) = red, 1, 999);
-
-      /* Use tainted color inside calc() */
-      --calc-mix: calc(1px + (var(--raw-accent)));
-
-      /* Try exfiltration to a non-color property */
-      z-index: var(--conditional);
-
-      /* Also apply tainted color */
-      background-color: var(--raw-accent);
-      padding: 1rem;
-      border-radius: 0.5rem;
-    }
-  </style>
-
-  <div id="complex-taint">
-    This block tests:<br>
-    <ul>
-      <li><code>if()</code> conditions involving AccentColor</li>
-      <li><code>calc()</code> with mixed color values</li>
-      <li>passing tainted values to <code>z-index</code></li>
-    </ul>
-  </div>
-
-  <button onclick="runComplexTaintTest()">Dump computed values</button>
-
-  <div class="results" id="complex-results"></div>
-</div>
-
-<script>
-function runComplexTaintTest() {
-  const el = document.getElementById('complex-taint');
-  const cs = getComputedStyle(el);
-  const out = document.getElementById('complex-results');
-
-  try {
-    const bg = cs.backgroundColor;
-    const rawAccent = cs.getPropertyValue('--raw-accent');
-    const conditional = cs.getPropertyValue('--conditional');
-    const calcMix = cs.getPropertyValue('--calc-mix');
-    const z = cs.zIndex;
-
-    out.textContent =
-      'background-color: ' + bg + '\n' +
-      '--raw-accent: ' + rawAccent + '\n' +
-      '--conditional: ' + conditional + '\n' +
-      '--calc-mix: ' + calcMix + '\n' +
-      'z-index (tainted attempt): ' + z;
-  } catch (e) {
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-</script>
 </body>
 </html>
-
-
-
-
