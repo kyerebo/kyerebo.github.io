@@ -289,76 +289,72 @@
       .log .entry.head { color: var(--amber-light); }
     }
 
-    /* ---- Declarative examples ---- */
-    .add-to-cart {
-      padding: 0.85rem 1.5rem;
-      border: none;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--green), var(--green-light));
-      color: #fff;
-      font: inherit;
-      font-weight: 600;
+    /* ---- Real-world use cases ---- */
+    button, input { font: inherit; }
+
+    button:focus-visible,
+    input:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 3px solid var(--amber);
+      outline-offset: 3px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+      padding: 0.35rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .tab {
+      border: 0;
+      border-radius: 8px;
+      padding: 0.65rem 0.5rem;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 700;
       cursor: pointer;
-      transition: scale 0.1s ease;
     }
 
-    .add-to-cart:active {
-      scale: 0.95;
-      /* Fires when the button is pressed. */
-      @haptic align 0.8;
-    }
-
-    .toggle-switch {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-      user-select: none;
-    }
-
-    .toggle-switch input { position: absolute; opacity: 0; }
-
-    .toggle-track {
-      width: 50px;
-      height: 28px;
-      border-radius: 999px;
-      background: var(--border);
-      position: relative;
-      transition: background 0.2s ease;
-    }
-
-    .toggle-track::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #fff;
-      transition: transform 0.2s ease;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-
-    .toggle-switch input:checked + .toggle-track {
+    .tab[aria-selected="true"] {
       background: var(--green);
-      /* Fires each time the switch turns on. */
-      @haptic tick;
+      color: #fff;
     }
 
-    .toggle-switch input:not(:checked) + .toggle-track {
-      /* Fires each time the switch turns off — per-rule tracking
-         means on and off both fire without collision. */
-      @haptic tick;
+    .tab-panel[hidden] { display: none; }
+    .tab-panel > .panel:last-child { margin-bottom: 0; }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
     }
 
-    .toggle-switch input:checked + .toggle-track::after {
-      transform: translateX(22px);
+    .example-card {
+      min-width: 0;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-hover);
     }
 
-    /* Text field focus hint */
+    .example-card.wide { grid-column: 1 / -1; }
+
+    .example-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .example-card p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-bottom: 0.8rem;
+    }
+
     .field {
       width: 100%;
       padding: 0.7rem 0.9rem;
@@ -366,86 +362,347 @@
       border-radius: 10px;
       background: var(--surface);
       color: var(--text);
-      font: inherit;
     }
 
-    .field:focus {
-      outline: none;
-      border-color: var(--green);
-      /* A light cue when the field becomes interactive. */
-      @haptic hint 0.5;
-    }
-
-    /* Validation edge */
-    .field.invalid {
-      border-color: #c0392b;
-      /* A heavy boundary signal on validation failure. */
-      @haptic edge;
-    }
-
-    /* Scroll-snap carousel */
-    .carousel {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 0.5rem;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .carousel > .slide {
-      flex: 0 0 80%;
-      scroll-snap-align: center;
-      aspect-ratio: 16 / 9;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .carousel > .slide:nth-child(odd) {
-      background: linear-gradient(135deg, var(--green), var(--green-light));
-    }
-    .carousel > .slide:nth-child(even) {
-      background: linear-gradient(135deg, var(--amber), var(--amber-light));
-    }
-
-    /* Fires when a slide becomes the snapped child. :snapped is a
-       CSS Scroll Snap 2 draft pseudo-class; falls back gracefully. */
-    .carousel > .slide:snapped {
-      @haptic tick 0.5;
-    }
-
-    .demo-inline {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+    .field:focus { border-color: var(--green); }
+    .field[aria-invalid="true"] { border-color: #c0392b; }
 
     .btn-secondary {
-      padding: 0.6rem 1.1rem;
+      padding: 0.6rem 1rem;
       border: 2px solid var(--border);
       border-radius: 10px;
       background: var(--surface);
       color: inherit;
-      font: inherit;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
     }
-    .btn-secondary:hover { border-color: var(--amber-light); }
 
-    /* Bounce keyframes for example 5. */
-    @keyframes bounce-settle {
-      0%   { transform: translateY(-100%); }
-      40%  { transform: translateY(0);    @haptic edge; }
-      60%  { transform: translateY(-20%); }
-      100% { transform: translateY(0);    @haptic align 0.5; }
+    .btn-secondary:hover { border-color: var(--amber-light); }
+    .btn-secondary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .status {
+      min-height: 1.5em;
+      margin-top: 0.65rem;
+      color: var(--text-muted);
+      font-size: 0.78rem;
     }
-    .bounce-play { animation: bounce-settle 0.6s ease; }
+
+    .error { color: #a93226; }
+    @media (prefers-color-scheme: dark) {
+      .error { color: #ff8a80; }
+    }
+
+    /* Hint */
+    .file-drag-demo {
+      position: relative;
+      overflow: hidden;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 0.75rem;
+    }
+
+    .drag-file {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.55rem 0.75rem;
+      border: 2px solid var(--green);
+      border-radius: 9px;
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      will-change: transform;
+    }
+
+    .drag-file.dragging { cursor: grabbing; box-shadow: 0 8px 20px var(--shadow); }
+
+    .folder-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.55rem;
+      margin-top: 0.8rem;
+    }
+
+    .folder {
+      min-height: 72px;
+      display: grid;
+      place-items: center;
+      padding: 0.5rem;
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-align: center;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .folder.active {
+      border-color: var(--amber);
+      background: rgba(220, 133, 31, 0.12);
+      color: var(--text);
+    }
+
+    .folder.filed { border-style: solid; border-color: var(--green); }
+    .file-drag-demo + .btn-secondary { margin-top: 0.7rem; }
+
+    /* Edge */
+    .validation-form {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .pull-refresh {
+      position: relative;
+      min-height: 175px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      touch-action: pan-x;
+      user-select: none;
+      cursor: grab;
+    }
+
+    .pull-refresh.pulling { cursor: grabbing; }
+
+    .pull-indicator {
+      --pull-progress: 0turn;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin: 0.8rem auto 0;
+      border-radius: 50%;
+      background: conic-gradient(var(--amber) var(--pull-progress), var(--border) 0);
+      transform: translateY(-52px);
+      transition: transform 0.15s ease;
+    }
+
+    .pull-indicator::after {
+      content: "↓";
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .pull-refresh.pulling .pull-indicator,
+    .pull-refresh.refreshing .pull-indicator { transform: translateY(0); }
+
+    .pull-refresh.refreshing .pull-indicator::after { content: "✓"; }
+
+    .pull-content {
+      padding: 1.2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .bounded-scroll {
+      height: 180px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .bounded-scroll.dragging { cursor: grabbing; }
+    .scroll-item { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); }
+    .scroll-item:last-child { border-bottom: 0; }
+
+    /* Tick */
+    .stepper {
+      display: grid;
+      grid-template-columns: auto minmax(90px, 1fr) auto;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .step-value {
+      text-align: center;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .switch-track {
+      width: 50px;
+      height: 28px;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--border);
+      transition: background 0.2s ease;
+    }
+
+    .switch-thumb {
+      display: block;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .switch[aria-checked="true"] .switch-track { background: var(--green); }
+    .switch[aria-checked="true"] .switch-thumb { transform: translateX(22px); }
+
+    /* Align */
+    .snap-stage {
+      position: relative;
+      min-height: 190px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+    }
+
+    .snap-targets {
+      position: absolute;
+      inset: 1rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .snap-target {
+      display: grid;
+      place-items: end center;
+      padding: 0.5rem;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .snap-target.preview,
+    .snap-target.locked {
+      border-color: var(--amber);
+      background: rgba(220, 133, 31, 0.1);
+      color: var(--text);
+    }
+
+    .snap-item {
+      position: absolute;
+      z-index: 2;
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--green), var(--green-light));
+      color: #fff;
+      font-size: 1.35rem;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      box-shadow: 0 5px 14px var(--shadow);
+    }
+
+    .snap-item.dragging { cursor: grabbing; }
+
+    .desktop {
+      position: relative;
+      min-height: 290px;
+      overflow: hidden;
+      border: 5px solid #31312f;
+      border-radius: 12px;
+      background:
+        linear-gradient(135deg, rgba(26,66,12,0.2), rgba(220,133,31,0.2)),
+        var(--bg);
+    }
+
+    .desktop-zone {
+      position: absolute;
+      z-index: 1;
+      opacity: 0;
+      border: 2px solid var(--amber);
+      background: rgba(220, 133, 31, 0.14);
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+    }
+
+    .desktop-zone.preview { opacity: 1; }
+    .desktop-zone[data-zone="left"] { inset: 0 50% 0 0; }
+    .desktop-zone[data-zone="right"] { inset: 0 0 0 50%; }
+    .desktop-zone[data-zone="top"] { inset: 0; }
+
+    .desktop-window {
+      position: absolute;
+      z-index: 2;
+      left: 18%;
+      top: 24%;
+      width: 64%;
+      height: 52%;
+      min-width: 150px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+    }
+
+    .desktop-window.snap-left { inset: 0 50% 0 0; width: auto; height: auto; border-radius: 0; }
+    .desktop-window.snap-right { inset: 0 0 0 50%; width: auto; height: auto; border-radius: 0; }
+    .desktop-window.snap-top { inset: 0; width: auto; height: auto; border-radius: 0; }
+
+    .window-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 0.7rem;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .window-titlebar.dragging { cursor: grabbing; }
+    .window-body { padding: 1rem; color: var(--text-muted); font-size: 0.78rem; }
+
+    @media (max-width: 620px) {
+      body { padding: 1.25rem 0.9rem; }
+      .panel { padding: 1rem; }
+      .example-grid { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: repeat(2, 1fr); }
+      .desktop { min-height: 240px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
 
     footer {
       text-align: center;
@@ -466,9 +723,8 @@
   <header>
     <h1><span class="accent">Web Haptics</span> API</h1>
     <p>Test bed for the proposed Web Haptics API — a semantic, cross-platform
-       interface for tactile feedback. Two mechanisms: the imperative
-       <code>navigator.playHaptics(effect, intensity)</code> and the declarative
-       CSS <code>@haptic</code> at-rule.</p>
+       interface for tactile feedback through
+       <code>navigator.playHaptics(effect, intensity)</code>.</p>
   </header>
 
   <div id="support" class="support-banner unsupported">
@@ -526,93 +782,168 @@
     </div>
   </section>
 
-  <!-- ============================================================
-       DECLARATIVE API
-       ============================================================ -->
-  <section>
-    <p class="section-label">Declarative API (CSS)</p>
-    <h2>The @haptic at-rule</h2>
-    <p class="lead">
-      The nested <code>@haptic &lt;effect&gt; &lt;intensity&gt;?</code> at-rule fires
-      once when its containing rule starts matching an element — no JavaScript in
-      the critical path. Interact with the examples below to feel each one.
-    </p>
+  <section aria-labelledby="use-cases-title">
+    <p class="section-label">Imperative patterns</p>
+    <h2 id="use-cases-title">Real-world use cases</h2>
+    <p class="lead">Each example calls the same <code>play(effect, intensity)</code>
+      helper on a meaningful UI transition rather than on every movement.</p>
 
-    <!-- Add to cart -->
-    <div class="panel">
-      <h3>1. Press confirmation</h3>
-      <p class="panel-desc">A tactile <code>align</code> when an "Add to cart"
-         button is pressed, fired from <code>:active</code>.</p>
-      <button class="add-to-cart">Add to cart</button>
-      <pre><code>.add-to-cart:active {
-  scale: 0.95;
-  @haptic align 0.8;
-}</code></pre>
+    <div class="tabs" role="tablist" aria-label="Haptic effect use cases">
+      <button class="tab" id="tab-hint" role="tab" aria-selected="true"
+        aria-controls="panel-hint" tabindex="0">Hint</button>
+      <button class="tab" id="tab-edge" role="tab" aria-selected="false"
+        aria-controls="panel-edge" tabindex="-1">Edge</button>
+      <button class="tab" id="tab-tick" role="tab" aria-selected="false"
+        aria-controls="panel-tick" tabindex="-1">Tick</button>
+      <button class="tab" id="tab-align" role="tab" aria-selected="false"
+        aria-controls="panel-align" tabindex="-1">Align</button>
     </div>
 
-    <!-- Toggle switch -->
-    <div class="panel">
-      <h3>2. Toggle switch</h3>
-      <p class="panel-desc">A <code>tick</code> on both on and off. Per-rule
-         tracking means the two transitions fire independently — no collision.</p>
-      <label class="toggle-switch">
-        <input type="checkbox">
-        <span class="toggle-track"></span>
-        <span>Enable feature</span>
-      </label>
-      <pre><code>input:checked + .toggle-track       { @haptic tick; }
-input:not(:checked) + .toggle-track { @haptic tick; }</code></pre>
+    <div class="tab-panel" id="panel-hint" role="tabpanel" aria-labelledby="tab-hint">
+      <div class="panel">
+        <div class="example-grid">
+          <div class="example-card">
+            <h3>Interactive field</h3>
+            <p>Focusing the field gives a subtle cue that it is ready.</p>
+            <label for="hint-field">Project name</label>
+            <input class="field" id="hint-field" type="text" placeholder="Haptics demo">
+            <div class="status" id="hint-focus-status" aria-live="polite"></div>
+          </div>
+
+          <div class="example-card">
+            <h3>File between folders</h3>
+            <p>Drag the file. Entering a different folder triggers one Hint.</p>
+            <div class="file-drag-demo" id="file-drag-demo">
+              <button class="drag-file" id="drag-file" type="button"
+                aria-describedby="file-drag-status"
+                aria-label="roadmap.pdf. Drag to a folder, or use Left and Right Arrow keys to choose one.">📄 roadmap.pdf</button>
+              <div class="folder-grid">
+                <div class="folder" data-folder="Design">📁 Design</div>
+                <div class="folder" data-folder="Planning">📁 Planning</div>
+                <div class="folder" data-folder="Archive">📁 Archive</div>
+              </div>
+            </div>
+            <button class="btn-secondary" id="file-reset" type="button">Reset file</button>
+            <div class="status" id="file-drag-status" aria-live="polite">Not filed.</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Focus hint + validation edge -->
-    <div class="panel">
-      <h3>3. Focus hint &amp; validation edge</h3>
-      <p class="panel-desc">A light <code>hint</code> when the field gains focus,
-         and a heavy <code>edge</code> if validation fails. Type something that
-         isn't an email and press <em>Validate</em>.</p>
-      <div class="demo-inline" style="margin-bottom:0.75rem">
-        <input type="email" class="field" placeholder="you@example.com">
+    <div class="tab-panel" id="panel-edge" role="tabpanel" aria-labelledby="tab-edge" hidden>
+      <div class="panel">
+        <div class="example-grid">
+          <div class="example-card">
+            <h3>Validation boundary</h3>
+            <p>Every failed submission announces the error and triggers Edge.</p>
+            <form class="validation-form" id="validation-form" novalidate>
+              <label for="edge-email">Work email</label>
+              <input class="field" id="edge-email" type="email" required
+                aria-describedby="validation-status" placeholder="you@example.com">
+              <button class="btn-secondary" type="submit">Continue</button>
+            </form>
+            <div class="status" id="validation-status" aria-live="assertive"></div>
+          </div>
+
+          <div class="example-card">
+            <h3>Pull to refresh</h3>
+            <p>Pull down until the circular indicator fills and crosses the limit.</p>
+            <div class="pull-refresh" id="pull-refresh" tabindex="0" role="button"
+              aria-label="Pull to refresh. Press Enter or Space to refresh."
+              aria-describedby="pull-status">
+              <div class="pull-indicator" id="pull-indicator" aria-hidden="true"></div>
+              <div class="pull-content">Latest updates<br><small>Pointer-drag downward</small></div>
+            </div>
+            <div class="status" id="pull-status" aria-live="polite">Ready to refresh.</div>
+          </div>
+
+          <div class="example-card wide">
+            <h3>Bounded scrolling</h3>
+            <p>Try to move past either end with a wheel, keyboard, or pointer drag.</p>
+            <div class="bounded-scroll" id="bounded-scroll" tabindex="0"
+              aria-label="Bounded list with six items" aria-describedby="scroll-status">
+              <div class="scroll-item">01 — Overview</div>
+              <div class="scroll-item">02 — Research</div>
+              <div class="scroll-item">03 — Prototype</div>
+              <div class="scroll-item">04 — Testing</div>
+              <div class="scroll-item">05 — Review</div>
+              <div class="scroll-item">06 — Launch</div>
+            </div>
+            <div class="status" id="scroll-status" aria-live="polite">Scroll within the list.</div>
+          </div>
+        </div>
       </div>
-      <div class="demo-inline">
-        <button class="btn-secondary" id="validate-btn">Validate</button>
-      </div>
-      <pre><code>.field:focus   { @haptic hint 0.5; }
-.field.invalid { @haptic edge; }</code></pre>
     </div>
 
-    <!-- Carousel -->
-    <div class="panel">
-      <h3>4. Scroll-snap carousel</h3>
-      <p class="panel-desc">A <code>tick</code> as each slide snaps into place,
-         using the draft <code>:snapped</code> pseudo-class. Swipe or drag
-         horizontally.</p>
-      <div class="carousel">
-        <div class="slide">1</div>
-        <div class="slide">2</div>
-        <div class="slide">3</div>
-        <div class="slide">4</div>
+    <div class="tab-panel" id="panel-tick" role="tabpanel" aria-labelledby="tab-tick" hidden>
+      <div class="panel">
+        <div class="example-grid">
+          <div class="example-card">
+            <h3>Discrete picker</h3>
+            <p>Each valid previous or next step triggers Tick.</p>
+            <div class="stepper">
+              <button class="btn-secondary" id="step-prev" type="button"
+                aria-label="Previous size">−</button>
+              <output class="step-value" id="step-value" aria-live="polite">Medium</output>
+              <button class="btn-secondary" id="step-next" type="button"
+                aria-label="Next size">+</button>
+            </div>
+          </div>
+
+          <div class="example-card">
+            <h3>Feature switch</h3>
+            <p>Every on or off transition triggers a crisp Tick.</p>
+            <button class="switch" id="tick-switch" type="button" role="switch"
+              aria-checked="false">
+              <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+              <span id="switch-label">Notifications off</span>
+            </button>
+            <div class="status" id="switch-status" aria-live="polite"></div>
+          </div>
+        </div>
       </div>
-      <pre><code>.carousel > .slide:snapped {
-  @haptic tick 0.5;
-}</code></pre>
     </div>
 
-    <!-- Keyframes -->
-    <div class="panel">
-      <h3>5. Keyframe choreography</h3>
-      <p class="panel-desc"><code>@haptic</code> nested inside
-         <code>@keyframes</code> enables multi-step haptic choreography — an
-         <code>edge</code> at impact, then a softer <code>align</code> on settle.</p>
-      <div class="demo-inline">
-        <button class="btn-secondary" id="bounce-btn">Play bounce</button>
-        <div id="bounce-box" style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--amber),var(--amber-light))"></div>
+    <div class="tab-panel" id="panel-align" role="tabpanel" aria-labelledby="tab-align" hidden>
+      <div class="panel">
+        <div class="example-grid">
+          <div class="example-card wide">
+            <h3>Drag to snap</h3>
+            <p>Release the tile near a different target to lock it into place.</p>
+            <div class="snap-stage" id="snap-stage">
+              <div class="snap-targets">
+                <div class="snap-target" data-snap="Start">Start</div>
+                <div class="snap-target" data-snap="Center">Center</div>
+                <div class="snap-target" data-snap="End">End</div>
+              </div>
+              <button class="snap-item" id="snap-item" type="button"
+                aria-describedby="snap-status" aria-keyshortcuts="ArrowLeft ArrowRight Home End"
+                aria-label="Draggable snap tile. Use Left and Right Arrow keys to change target.">◆</button>
+            </div>
+            <div class="status" id="snap-status" aria-live="polite">Locked to Start.</div>
+          </div>
+
+          <div class="example-card wide">
+            <h3>Desktop window snapping</h3>
+            <p>Drag the title bar to the left, right, or top preview zone, then release.</p>
+            <div class="desktop" id="desktop">
+              <div class="desktop-zone" data-zone="left"></div>
+              <div class="desktop-zone" data-zone="right"></div>
+              <div class="desktop-zone" data-zone="top"></div>
+              <div class="desktop-window" id="desktop-window">
+                <div class="window-titlebar" id="window-titlebar" tabindex="0"
+                  role="button" aria-describedby="desktop-status"
+                  aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp Escape"
+                  aria-label="Project board window. Use arrow keys to snap, or Escape to release.">
+                  <span>Project board</span><span aria-hidden="true">— □ ×</span>
+                </div>
+                <div class="window-body">Drag this window by its title bar.</div>
+              </div>
+            </div>
+            <div class="status" id="desktop-status" aria-live="polite">Window is free.</div>
+          </div>
+        </div>
       </div>
-      <pre><code>@keyframes bounce-settle {
-  0%   { transform: translateY(-100%); }
-  40%  { transform: translateY(0);   @haptic edge; }
-  60%  { transform: translateY(-20%); }
-  100% { transform: translateY(0);   @haptic align 0.5; }
-}</code></pre>
     </div>
   </section>
 
@@ -642,7 +973,7 @@ input:not(:checked) + .toggle-track { @haptic tick; }</code></pre>
         banner.className = 'support-banner unsupported';
         title.textContent = 'navigator.playHaptics() is not available';
         detail.textContent = 'This browser does not implement the Web Haptics API yet. ' +
-          'The buttons and CSS examples are wired up and will work once support ships.';
+          'The controls are wired up and log simulated calls until support ships.';
       }
 
       // ---- Logging -------------------------------------------------------
@@ -685,31 +1016,633 @@ input:not(:checked) + .toggle-track { @haptic tick; }</code></pre>
         });
       });
 
-      // ---- Validation edge (example 3) ----------------------------------
-      const emailField = document.querySelector('.field[type="email"]');
-      const validateBtn = document.getElementById('validate-btn');
-      validateBtn.addEventListener('click', () => {
-        const valid = emailField.checkValidity() && emailField.value.trim() !== '';
-        // Remove first so re-validating an invalid value re-triggers the
-        // not-matching -> matching transition that fires @haptic edge.
-        emailField.classList.remove('invalid');
-        if (!valid) {
-          void emailField.offsetWidth; // force reflow
-          emailField.classList.add('invalid');
-          addLog('Validation failed → @haptic edge should fire');
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const containsPoint = (rect, x, y) =>
+        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+
+      // ---- Accessible tabs ----------------------------------------------
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      const panels = tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls')));
+
+      function activateTab(tab, moveFocus) {
+        tabs.forEach((candidate, index) => {
+          const selected = candidate === tab;
+          candidate.setAttribute('aria-selected', String(selected));
+          candidate.tabIndex = selected ? 0 : -1;
+          panels[index].hidden = !selected;
+        });
+        if (moveFocus) tab.focus();
+        if (tab.id === 'tab-align') {
+          requestAnimationFrame(() => {
+            placeSnap(snapIndex);
+            constrainDesktopWindow();
+          });
+        }
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activateTab(tab, false));
+        tab.addEventListener('keydown', (event) => {
+          let next = index;
+          if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+          else if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = tabs.length - 1;
+          else return;
+          event.preventDefault();
+          activateTab(tabs[next], true);
+        });
+      });
+
+      // ---- Hint examples -------------------------------------------------
+      const hintField = document.getElementById('hint-field');
+      const hintFocusStatus = document.getElementById('hint-focus-status');
+      hintField.addEventListener('focus', () => {
+        play('hint', 0.45);
+        hintFocusStatus.textContent = 'Field ready for input.';
+      });
+
+      const dragFile = document.getElementById('drag-file');
+      const folders = Array.from(document.querySelectorAll('.folder'));
+      const fileStatus = document.getElementById('file-drag-status');
+      let fileDrag = null;
+
+      function folderAt(x, y) {
+        return folders.find((folder) => containsPoint(folder.getBoundingClientRect(), x, y)) || null;
+      }
+
+      function clearFolderState() {
+        folders.forEach((folder) => folder.classList.remove('active'));
+      }
+
+      function resetFilePosition(message) {
+        dragFile.style.transform = '';
+        dragFile.classList.remove('dragging');
+        clearFolderState();
+        if (message) fileStatus.textContent = message;
+      }
+
+      dragFile.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || fileDrag) return;
+        fileDrag = {
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          currentFolder: null,
+          lastFolder: null
+        };
+        dragFile.setPointerCapture(event.pointerId);
+        dragFile.classList.add('dragging');
+        fileStatus.textContent = 'Dragging roadmap.pdf.';
+      });
+
+      dragFile.addEventListener('pointermove', (event) => {
+        if (!fileDrag || event.pointerId !== fileDrag.pointerId) return;
+        event.preventDefault();
+        const x = event.clientX - fileDrag.startX;
+        const y = event.clientY - fileDrag.startY;
+        dragFile.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+        const folder = folderAt(event.clientX, event.clientY);
+        clearFolderState();
+        if (folder) {
+          folder.classList.add('active');
+          const name = folder.dataset.folder;
+          if (name !== fileDrag.lastFolder) {
+            fileDrag.lastFolder = name;
+            play('hint', 0.55);
+            fileStatus.textContent = name + ' folder available.';
+          }
+          fileDrag.currentFolder = folder;
         } else {
-          addLog('Validation passed');
+          fileDrag.currentFolder = null;
         }
       });
 
-      // ---- Keyframe bounce (example 5) ----------------------------------
-      const bounceBtn = document.getElementById('bounce-btn');
-      const bounceBox = document.getElementById('bounce-box');
-      bounceBtn.addEventListener('click', () => {
-        bounceBox.classList.remove('bounce-play');
-        void bounceBox.offsetWidth; // restart animation
-        bounceBox.classList.add('bounce-play');
-        addLog('bounce-settle animation → @haptic edge, then @haptic align 0.5');
+      function finishFileDrag(event, cancelled) {
+        if (!fileDrag || event.pointerId !== fileDrag.pointerId) return;
+        const target = fileDrag.currentFolder;
+        if (dragFile.hasPointerCapture(event.pointerId)) dragFile.releasePointerCapture(event.pointerId);
+        fileDrag = null;
+        folders.forEach((folder) => folder.classList.remove('filed'));
+        if (!cancelled && target) {
+          target.classList.add('filed');
+          resetFilePosition('Filed roadmap.pdf in ' + target.dataset.folder + '.');
+        } else {
+          resetFilePosition(cancelled ? 'Drag cancelled.' : 'Not filed.');
+        }
+      }
+
+      dragFile.addEventListener('pointerup', (event) => finishFileDrag(event, false));
+      dragFile.addEventListener('pointercancel', (event) => finishFileDrag(event, true));
+      dragFile.addEventListener('keydown', (event) => {
+        const current = folders.findIndex((folder) => folder.classList.contains('filed'));
+        let next = current;
+        if (event.key === 'ArrowRight') next = (current + 1 + folders.length) % folders.length;
+        else if (event.key === 'ArrowLeft') next = (current - 1 + folders.length) % folders.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = folders.length - 1;
+        else return;
+        event.preventDefault();
+        if (event.repeat || next === current) return;
+        folders.forEach((folder, index) => folder.classList.toggle('filed', index === next));
+        fileStatus.textContent = 'Filed roadmap.pdf in ' + folders[next].dataset.folder + '.';
+        play('hint', 0.55);
+      });
+      document.getElementById('file-reset').addEventListener('click', () => {
+        folders.forEach((folder) => folder.classList.remove('filed'));
+        resetFilePosition('Not filed.');
+      });
+
+      // ---- Edge: validation ---------------------------------------------
+      const validationForm = document.getElementById('validation-form');
+      const edgeEmail = document.getElementById('edge-email');
+      const validationStatus = document.getElementById('validation-status');
+      validationForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const valid = edgeEmail.checkValidity();
+        edgeEmail.setAttribute('aria-invalid', String(!valid));
+        if (!valid) {
+          validationStatus.className = 'status error';
+          validationStatus.textContent = 'Enter a valid work email before continuing.';
+          play('edge', 0.9);
+          edgeEmail.focus();
+        } else {
+          validationStatus.className = 'status';
+          validationStatus.textContent = 'Email accepted.';
+        }
+      });
+      edgeEmail.addEventListener('input', () => {
+        edgeEmail.removeAttribute('aria-invalid');
+        validationStatus.textContent = '';
+      });
+
+      // ---- Edge: pull to refresh ----------------------------------------
+      const pullRefresh = document.getElementById('pull-refresh');
+      const pullIndicator = document.getElementById('pull-indicator');
+      const pullStatus = document.getElementById('pull-status');
+      const PULL_THRESHOLD = 80;
+      let pullState = null;
+      let refreshTimer = 0;
+
+      function setPullProgress(progress) {
+        pullIndicator.style.setProperty('--pull-progress', progress + 'turn');
+      }
+
+      function resetPull(message) {
+        pullRefresh.classList.remove('pulling', 'refreshing');
+        setPullProgress(0);
+        pullStatus.textContent = message;
+      }
+
+      pullRefresh.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || pullState || pullRefresh.classList.contains('refreshing')) return;
+        clearTimeout(refreshTimer);
+        pullState = { pointerId: event.pointerId, startY: event.clientY, crossed: false };
+        pullRefresh.setPointerCapture(event.pointerId);
+        pullRefresh.classList.add('pulling');
+        pullStatus.textContent = 'Pull down to refresh.';
+      });
+
+      pullRefresh.addEventListener('pointermove', (event) => {
+        if (!pullState || event.pointerId !== pullState.pointerId) return;
+        event.preventDefault();
+        const distance = clamp(event.clientY - pullState.startY, 0, PULL_THRESHOLD + 24);
+        const progress = clamp(distance / PULL_THRESHOLD, 0, 1);
+        setPullProgress(progress);
+        if (progress === 1 && !pullState.crossed) {
+          pullState.crossed = true;
+          pullStatus.textContent = 'Refresh threshold reached. Release to refresh.';
+          play('edge', 0.85);
+        }
+      });
+
+      function finishPull(event, cancelled) {
+        if (!pullState || event.pointerId !== pullState.pointerId) return;
+        const crossed = pullState.crossed;
+        if (pullRefresh.hasPointerCapture(event.pointerId)) pullRefresh.releasePointerCapture(event.pointerId);
+        pullState = null;
+        pullRefresh.classList.remove('pulling');
+        if (!cancelled && crossed) {
+          pullRefresh.classList.add('refreshing');
+          setPullProgress(1);
+          pullStatus.textContent = 'Refreshing…';
+          refreshTimer = window.setTimeout(() => resetPull('Refresh complete. Ready again.'), 900);
+        } else {
+          resetPull(cancelled ? 'Pull cancelled.' : 'Ready to refresh.');
+        }
+      }
+
+      pullRefresh.addEventListener('pointerup', (event) => finishPull(event, false));
+      pullRefresh.addEventListener('pointercancel', (event) => finishPull(event, true));
+      pullRefresh.addEventListener('keydown', (event) => {
+        if (!['Enter', ' '].includes(event.key) || event.repeat ||
+            pullState || pullRefresh.classList.contains('refreshing')) return;
+        event.preventDefault();
+        play('edge', 0.85);
+        pullRefresh.classList.add('refreshing');
+        setPullProgress(1);
+        pullStatus.textContent = 'Refreshing…';
+        refreshTimer = window.setTimeout(() => resetPull('Refresh complete. Ready again.'), 900);
+      });
+
+      // ---- Edge: bounded scrolling --------------------------------------
+      const boundedScroll = document.getElementById('bounded-scroll');
+      const scrollStatus = document.getElementById('scroll-status');
+      let wheelGuard = false;
+      let wheelGuardTimer = 0;
+      let scrollDrag = null;
+
+      function atScrollTop() {
+        return boundedScroll.scrollTop <= 1;
+      }
+
+      function atScrollBottom() {
+        return boundedScroll.scrollTop >= boundedScroll.scrollHeight - boundedScroll.clientHeight - 1;
+      }
+
+      function reportScrollEdge(edge, guarded) {
+        if (guarded && wheelGuard) return;
+        if (guarded) {
+          wheelGuard = true;
+          clearTimeout(wheelGuardTimer);
+          wheelGuardTimer = window.setTimeout(() => { wheelGuard = false; }, 250);
+        }
+        scrollStatus.textContent = edge === 'top' ? 'Already at the first item.' : 'Already at the last item.';
+        play('edge', 0.8);
+      }
+
+      boundedScroll.addEventListener('wheel', (event) => {
+        const edge = event.deltaY < 0 && atScrollTop() ? 'top' :
+          event.deltaY > 0 && atScrollBottom() ? 'bottom' : null;
+        if (!edge) {
+          wheelGuard = false;
+          return;
+        }
+        event.preventDefault();
+        reportScrollEdge(edge, true);
+        clearTimeout(wheelGuardTimer);
+        wheelGuardTimer = window.setTimeout(() => { wheelGuard = false; }, 250);
+      }, { passive: false });
+
+      boundedScroll.addEventListener('keydown', (event) => {
+        const upward = ['ArrowUp', 'PageUp', 'Home'].includes(event.key);
+        const downward = ['ArrowDown', 'PageDown', 'End'].includes(event.key);
+        const edge = upward && atScrollTop() ? 'top' : downward && atScrollBottom() ? 'bottom' : null;
+        if (!edge) return;
+        event.preventDefault();
+        if (!event.repeat) reportScrollEdge(edge, false);
+      });
+
+      boundedScroll.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || scrollDrag) return;
+        scrollDrag = {
+          pointerId: event.pointerId,
+          startY: event.clientY,
+          startScroll: boundedScroll.scrollTop,
+          boundary: null
+        };
+        boundedScroll.setPointerCapture(event.pointerId);
+        boundedScroll.classList.add('dragging');
+      });
+
+      boundedScroll.addEventListener('pointermove', (event) => {
+        if (!scrollDrag || event.pointerId !== scrollDrag.pointerId) return;
+        event.preventDefault();
+        const max = boundedScroll.scrollHeight - boundedScroll.clientHeight;
+        const desired = scrollDrag.startScroll - (event.clientY - scrollDrag.startY);
+        boundedScroll.scrollTop = clamp(desired, 0, max);
+        const edge = desired < 0 ? 'top' : desired > max ? 'bottom' : null;
+        if (edge && edge !== scrollDrag.boundary) reportScrollEdge(edge, false);
+        scrollDrag.boundary = edge;
+      });
+
+      function finishScrollDrag(event) {
+        if (!scrollDrag || event.pointerId !== scrollDrag.pointerId) return;
+        if (boundedScroll.hasPointerCapture(event.pointerId)) boundedScroll.releasePointerCapture(event.pointerId);
+        scrollDrag = null;
+        boundedScroll.classList.remove('dragging');
+      }
+
+      boundedScroll.addEventListener('pointerup', finishScrollDrag);
+      boundedScroll.addEventListener('pointercancel', finishScrollDrag);
+
+      // ---- Tick examples -------------------------------------------------
+      const stepValues = ['Small', 'Medium', 'Large', 'Extra large'];
+      const stepValue = document.getElementById('step-value');
+      const stepPrev = document.getElementById('step-prev');
+      const stepNext = document.getElementById('step-next');
+      let stepIndex = 1;
+
+      function updateStep() {
+        stepValue.textContent = stepValues[stepIndex];
+        stepPrev.disabled = stepIndex === 0;
+        stepNext.disabled = stepIndex === stepValues.length - 1;
+      }
+
+      function takeStep(delta) {
+        const next = clamp(stepIndex + delta, 0, stepValues.length - 1);
+        if (next === stepIndex) return;
+        stepIndex = next;
+        updateStep();
+        play('tick', 0.65);
+      }
+
+      stepPrev.addEventListener('click', () => takeStep(-1));
+      stepNext.addEventListener('click', () => takeStep(1));
+      updateStep();
+
+      const tickSwitch = document.getElementById('tick-switch');
+      const switchLabel = document.getElementById('switch-label');
+      const switchStatus = document.getElementById('switch-status');
+      tickSwitch.addEventListener('click', () => {
+        const checked = tickSwitch.getAttribute('aria-checked') !== 'true';
+        tickSwitch.setAttribute('aria-checked', String(checked));
+        switchLabel.textContent = 'Notifications ' + (checked ? 'on' : 'off');
+        switchStatus.textContent = 'Notifications turned ' + (checked ? 'on.' : 'off.');
+        play('tick', 0.55);
+      });
+
+      // ---- Align: drag to snap ------------------------------------------
+      const snapStage = document.getElementById('snap-stage');
+      const snapItem = document.getElementById('snap-item');
+      const snapTargets = Array.from(document.querySelectorAll('.snap-target'));
+      const snapStatus = document.getElementById('snap-status');
+      let snapIndex = 0;
+      let snapDrag = null;
+
+      function placeSnap(index) {
+        const stageRect = snapStage.getBoundingClientRect();
+        const targetRect = snapTargets[index].getBoundingClientRect();
+        if (!stageRect.width || !targetRect.width) return;
+        snapItem.style.left = (targetRect.left - stageRect.left - snapStage.clientLeft +
+          (targetRect.width - snapItem.offsetWidth) / 2) + 'px';
+        snapItem.style.top = (targetRect.top - stageRect.top - snapStage.clientTop +
+          (targetRect.height - snapItem.offsetHeight) / 2) + 'px';
+        snapTargets.forEach((target, targetIndex) => {
+          target.classList.toggle('locked', targetIndex === index);
+          target.classList.remove('preview');
+        });
+      }
+
+      function nearestSnapTarget(itemCenterX, itemCenterY) {
+        let nearest = null;
+        let nearestDistance = Infinity;
+        snapTargets.forEach((target, index) => {
+          const rect = target.getBoundingClientRect();
+          const distance = Math.hypot(
+            itemCenterX - (rect.left + rect.width / 2),
+            itemCenterY - (rect.top + rect.height / 2)
+          );
+          if (distance < nearestDistance) {
+            nearest = index;
+            nearestDistance = distance;
+          }
+        });
+        return nearestDistance <= 100 ? nearest : null;
+      }
+
+      snapItem.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || snapDrag) return;
+        const itemRect = snapItem.getBoundingClientRect();
+        snapDrag = {
+          pointerId: event.pointerId,
+          offsetX: event.clientX - itemRect.left,
+          offsetY: event.clientY - itemRect.top,
+          preview: null
+        };
+        snapItem.setPointerCapture(event.pointerId);
+        snapItem.classList.add('dragging');
+      });
+
+      snapItem.addEventListener('pointermove', (event) => {
+        if (!snapDrag || event.pointerId !== snapDrag.pointerId) return;
+        event.preventDefault();
+        const stageRect = snapStage.getBoundingClientRect();
+        const stageLeft = stageRect.left + snapStage.clientLeft;
+        const stageTop = stageRect.top + snapStage.clientTop;
+        const left = clamp(
+          event.clientX - stageLeft - snapDrag.offsetX,
+          0,
+          snapStage.clientWidth - snapItem.offsetWidth
+        );
+        const top = clamp(
+          event.clientY - stageTop - snapDrag.offsetY,
+          0,
+          snapStage.clientHeight - snapItem.offsetHeight
+        );
+        snapItem.style.left = left + 'px';
+        snapItem.style.top = top + 'px';
+        snapDrag.preview = nearestSnapTarget(
+          stageLeft + left + snapItem.offsetWidth / 2,
+          stageTop + top + snapItem.offsetHeight / 2
+        );
+        snapTargets.forEach((target, index) =>
+          target.classList.toggle('preview', index === snapDrag.preview && index !== snapIndex));
+      });
+
+      function finishSnapDrag(event, cancelled) {
+        if (!snapDrag || event.pointerId !== snapDrag.pointerId) return;
+        const next = cancelled ? null : snapDrag.preview;
+        if (snapItem.hasPointerCapture(event.pointerId)) snapItem.releasePointerCapture(event.pointerId);
+        snapDrag = null;
+        snapItem.classList.remove('dragging');
+        if (next !== null && next !== snapIndex) {
+          snapIndex = next;
+          placeSnap(snapIndex);
+          snapStatus.textContent = 'Locked to ' + snapTargets[snapIndex].dataset.snap + '.';
+          play('align', 0.8);
+        } else {
+          placeSnap(snapIndex);
+          if (cancelled) snapStatus.textContent = 'Drag cancelled. Still locked to ' +
+            snapTargets[snapIndex].dataset.snap + '.';
+        }
+      }
+
+      snapItem.addEventListener('pointerup', (event) => finishSnapDrag(event, false));
+      snapItem.addEventListener('pointercancel', (event) => finishSnapDrag(event, true));
+      snapItem.addEventListener('keydown', (event) => {
+        let next = snapIndex;
+        if (event.key === 'ArrowLeft') next = clamp(snapIndex - 1, 0, snapTargets.length - 1);
+        else if (event.key === 'ArrowRight') next = clamp(snapIndex + 1, 0, snapTargets.length - 1);
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = snapTargets.length - 1;
+        else return;
+        event.preventDefault();
+        if (event.repeat || next === snapIndex) return;
+        snapIndex = next;
+        placeSnap(snapIndex);
+        snapStatus.textContent = 'Locked to ' + snapTargets[snapIndex].dataset.snap + '.';
+        play('align', 0.8);
+      });
+
+      // ---- Align: desktop window snapping -------------------------------
+      const desktop = document.getElementById('desktop');
+      const desktopWindow = document.getElementById('desktop-window');
+      const titlebar = document.getElementById('window-titlebar');
+      const desktopZones = Array.from(document.querySelectorAll('.desktop-zone'));
+      const desktopStatus = document.getElementById('desktop-status');
+      let desktopMode = 'free';
+      let windowDrag = null;
+
+      function clearDesktopPreview() {
+        desktopZones.forEach((zone) => zone.classList.remove('preview'));
+      }
+
+      function setDesktopPreview(zoneName) {
+        desktopZones.forEach((zone) =>
+          zone.classList.toggle('preview', zone.dataset.zone === zoneName));
+      }
+
+      function applyDesktopSnap(zoneName, announce) {
+        desktopWindow.classList.remove('snap-left', 'snap-right', 'snap-top');
+        desktopWindow.style.left = '';
+        desktopWindow.style.top = '';
+        desktopWindow.style.width = '';
+        desktopWindow.style.height = '';
+        if (zoneName !== 'free') desktopWindow.classList.add('snap-' + zoneName);
+        clearDesktopPreview();
+        if (announce) {
+          desktopStatus.textContent = zoneName === 'top' ? 'Window maximized.' :
+            zoneName === 'free' ? 'Window is free.' :
+            'Window snapped ' + zoneName + '.';
+        }
+      }
+
+      function desktopZoneAt(clientX, clientY) {
+        const rect = desktop.getBoundingClientRect();
+        const x = clientX - rect.left - desktop.clientLeft;
+        const y = clientY - rect.top - desktop.clientTop;
+        if (y <= Math.min(58, desktop.clientHeight * 0.22)) return 'top';
+        if (x <= desktop.clientWidth * 0.22) return 'left';
+        if (x >= desktop.clientWidth * 0.78) return 'right';
+        return null;
+      }
+
+      titlebar.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || windowDrag) return;
+        const desktopRect = desktop.getBoundingClientRect();
+        const windowRect = desktopWindow.getBoundingClientRect();
+        const desktopLeft = desktopRect.left + desktop.clientLeft;
+        const desktopTop = desktopRect.top + desktop.clientTop;
+        const startedMode = desktopMode;
+        const original = {
+          left: desktopWindow.style.left,
+          top: desktopWindow.style.top,
+          width: desktopWindow.style.width,
+          height: desktopWindow.style.height
+        };
+        let width = windowRect.width;
+        let height = windowRect.height;
+        let left = windowRect.left - desktopLeft;
+        let top = windowRect.top - desktopTop;
+
+        desktopWindow.classList.remove('snap-left', 'snap-right', 'snap-top');
+        if (startedMode !== 'free') {
+          width = clamp(desktop.clientWidth * 0.64, 150, desktop.clientWidth);
+          height = clamp(desktop.clientHeight * 0.52, 110, desktop.clientHeight);
+          left = clamp(event.clientX - desktopLeft - width / 2, 0, desktop.clientWidth - width);
+          top = clamp(event.clientY - desktopTop - 20, 0, desktop.clientHeight - height);
+        }
+        desktopWindow.style.left = left + 'px';
+        desktopWindow.style.top = top + 'px';
+        desktopWindow.style.width = width + 'px';
+        desktopWindow.style.height = height + 'px';
+
+        windowDrag = {
+          pointerId: event.pointerId,
+          offsetX: event.clientX - desktopLeft - left,
+          offsetY: event.clientY - desktopTop - top,
+          preview: null,
+          startedMode,
+          original
+        };
+        titlebar.setPointerCapture(event.pointerId);
+        titlebar.classList.add('dragging');
+      });
+
+      titlebar.addEventListener('pointermove', (event) => {
+        if (!windowDrag || event.pointerId !== windowDrag.pointerId) return;
+        event.preventDefault();
+        const desktopRect = desktop.getBoundingClientRect();
+        const desktopLeft = desktopRect.left + desktop.clientLeft;
+        const desktopTop = desktopRect.top + desktop.clientTop;
+        const width = desktopWindow.offsetWidth;
+        const height = desktopWindow.offsetHeight;
+        desktopWindow.style.left = clamp(
+          event.clientX - desktopLeft - windowDrag.offsetX,
+          0,
+          desktop.clientWidth - width
+        ) + 'px';
+        desktopWindow.style.top = clamp(
+          event.clientY - desktopTop - windowDrag.offsetY,
+          0,
+          desktop.clientHeight - height
+        ) + 'px';
+        windowDrag.preview = desktopZoneAt(event.clientX, event.clientY);
+        setDesktopPreview(windowDrag.preview);
+      });
+
+      function finishWindowDrag(event, cancelled) {
+        if (!windowDrag || event.pointerId !== windowDrag.pointerId) return;
+        const state = windowDrag;
+        if (titlebar.hasPointerCapture(event.pointerId)) titlebar.releasePointerCapture(event.pointerId);
+        windowDrag = null;
+        titlebar.classList.remove('dragging');
+        clearDesktopPreview();
+
+        if (cancelled) {
+          if (state.startedMode !== 'free') {
+            applyDesktopSnap(state.startedMode, false);
+          } else {
+            Object.assign(desktopWindow.style, state.original);
+          }
+          desktopStatus.textContent = 'Window drag cancelled.';
+          return;
+        }
+
+        if (state.preview) {
+          const changed = state.preview !== desktopMode;
+          desktopMode = state.preview;
+          applyDesktopSnap(desktopMode, true);
+          if (changed) play('align', 0.9);
+        } else {
+          desktopMode = 'free';
+          desktopStatus.textContent = 'Window is free.';
+        }
+      }
+
+      titlebar.addEventListener('pointerup', (event) => finishWindowDrag(event, false));
+      titlebar.addEventListener('pointercancel', (event) => finishWindowDrag(event, true));
+      titlebar.addEventListener('keydown', (event) => {
+        const target = event.key === 'ArrowLeft' ? 'left' :
+          event.key === 'ArrowRight' ? 'right' :
+          event.key === 'ArrowUp' ? 'top' :
+          event.key === 'Escape' ? 'free' : null;
+        if (!target) return;
+        event.preventDefault();
+        if (event.repeat || target === desktopMode) return;
+        desktopMode = target;
+        applyDesktopSnap(target, true);
+        if (target !== 'free') play('align', 0.9);
+      });
+
+      function constrainDesktopWindow() {
+        if (desktopMode === 'free' && desktopWindow.style.left) {
+          const width = Math.min(desktopWindow.offsetWidth, desktop.clientWidth);
+          const height = Math.min(desktopWindow.offsetHeight, desktop.clientHeight);
+          desktopWindow.style.width = width + 'px';
+          desktopWindow.style.height = height + 'px';
+          desktopWindow.style.left = clamp(parseFloat(desktopWindow.style.left) || 0,
+            0, desktop.clientWidth - width) + 'px';
+          desktopWindow.style.top = clamp(parseFloat(desktopWindow.style.top) || 0,
+            0, desktop.clientHeight - height) + 'px';
+        }
+      }
+
+      window.addEventListener('resize', () => {
+        if (document.getElementById('panel-align').hidden) return;
+        placeSnap(snapIndex);
+        constrainDesktopWindow();
       });
 
       // ---- Service worker (consistent with other demos) ------------------
