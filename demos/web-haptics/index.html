@@ -570,61 +570,69 @@
     .switch[aria-checked="true"] .switch-track { background: var(--green); }
     .switch[aria-checked="true"] .switch-thumb { transform: translateX(22px); }
 
+    .detent-slider {
+      width: 100%;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+
+    .detent-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.25rem;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+    }
+
     /* Align */
-    .snap-stage {
+    .align-canvas {
       position: relative;
-      min-height: 190px;
+      min-height: 280px;
       overflow: hidden;
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: var(--surface);
+      background-color: var(--surface);
+      background-image: radial-gradient(var(--border) 1px, transparent 1px);
+      background-size: 20px 20px;
     }
 
-    .snap-targets {
+    .align-guide {
       position: absolute;
-      inset: 1rem;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.75rem;
+      z-index: 1;
+      display: none;
+      pointer-events: none;
+      background: var(--amber);
+      box-shadow: 0 0 0 1px rgba(220, 133, 31, 0.18);
     }
 
-    .snap-target {
-      display: grid;
-      place-items: end center;
-      padding: 0.5rem;
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
+    .align-guide.visible { display: block; }
+    .align-guide.vertical { top: 0; bottom: 0; left: 50%; width: 2px; }
+    .align-guide.horizontal { left: 0; right: 0; top: 50%; height: 2px; }
 
-    .snap-target.preview,
-    .snap-target.locked {
-      border-color: var(--amber);
-      background: rgba(220, 133, 31, 0.1);
-      color: var(--text);
-    }
-
-    .snap-item {
+    .align-shape {
       position: absolute;
       z-index: 2;
-      width: 58px;
-      height: 58px;
+      width: 76px;
+      height: 76px;
       display: grid;
       place-items: center;
-      border: 0;
-      border-radius: 14px;
+      left: 15%;
+      top: 18%;
+      border: 2px solid rgba(255,255,255,0.65);
+      border-radius: 18px;
       background: linear-gradient(135deg, var(--green), var(--green-light));
       color: #fff;
-      font-size: 1.35rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       cursor: grab;
       touch-action: none;
       user-select: none;
       box-shadow: 0 5px 14px var(--shadow);
     }
 
-    .snap-item.dragging { cursor: grabbing; }
+    .align-shape.dragging { cursor: grabbing; }
 
     .desktop {
       position: relative;
@@ -871,6 +879,26 @@
             </div>
             <div class="status" id="scroll-status" aria-live="polite">Scroll within the list.</div>
           </div>
+
+          <div class="example-card wide">
+            <h3>Window edge snapping</h3>
+            <p>Drag the title bar until the window touches an edge. Edge feedback fires on contact, before release.</p>
+            <div class="desktop" id="desktop">
+              <div class="desktop-zone" data-zone="left"></div>
+              <div class="desktop-zone" data-zone="right"></div>
+              <div class="desktop-zone" data-zone="top"></div>
+              <div class="desktop-window" id="desktop-window">
+                <div class="window-titlebar" id="window-titlebar" tabindex="0"
+                  role="button" aria-describedby="desktop-status"
+                  aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp Escape"
+                  aria-label="Project board window. Drag it to an edge, use arrow keys to snap, or Escape to release.">
+                  <span>Project board</span><span aria-hidden="true">— □ ×</span>
+                </div>
+                <div class="window-body">Drag this window by its title bar.</div>
+              </div>
+            </div>
+            <div class="status" id="desktop-status" aria-live="polite">Window is free.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -900,6 +928,25 @@
             </button>
             <div class="status" id="switch-status" aria-live="polite"></div>
           </div>
+
+          <div class="example-card wide">
+            <h3>Detent slider</h3>
+            <p>Drag through the discrete stops. Each newly selected detent triggers Tick.</p>
+            <label for="tick-slider">Zoom: <output id="tick-slider-value">100%</output></label>
+            <input class="detent-slider" id="tick-slider" type="range"
+              min="50" max="150" step="25" value="100" list="tick-detents">
+            <datalist id="tick-detents">
+              <option value="50"></option>
+              <option value="75"></option>
+              <option value="100"></option>
+              <option value="125"></option>
+              <option value="150"></option>
+            </datalist>
+            <div class="detent-labels" aria-hidden="true">
+              <span>50%</span><span>75%</span><span>100%</span><span>125%</span><span>150%</span>
+            </div>
+            <div class="status" id="tick-slider-status" aria-live="polite">At the 100% detent.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -908,39 +955,16 @@
       <div class="panel">
         <div class="example-grid">
           <div class="example-card wide">
-            <h3>Drag to snap</h3>
-            <p>Release the tile near a different target to lock it into place.</p>
-            <div class="snap-stage" id="snap-stage">
-              <div class="snap-targets">
-                <div class="snap-target" data-snap="Start">Start</div>
-                <div class="snap-target" data-snap="Center">Center</div>
-                <div class="snap-target" data-snap="End">End</div>
-              </div>
-              <button class="snap-item" id="snap-item" type="button"
-                aria-describedby="snap-status" aria-keyshortcuts="ArrowLeft ArrowRight Home End"
-                aria-label="Draggable snap tile. Use Left and Right Arrow keys to change target.">◆</button>
+            <h3>Canvas alignment guides</h3>
+            <p>Drag the shape around the canvas. Align feedback fires as a center snap guide appears.</p>
+            <div class="align-canvas" id="align-canvas">
+              <div class="align-guide vertical" id="align-guide-x" aria-hidden="true"></div>
+              <div class="align-guide horizontal" id="align-guide-y" aria-hidden="true"></div>
+              <button class="align-shape" id="align-shape" type="button"
+                aria-describedby="align-status" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home"
+                aria-label="Draggable shape. Use arrow keys to move it, or Home to align it to the center.">Shape</button>
             </div>
-            <div class="status" id="snap-status" aria-live="polite">Locked to Start.</div>
-          </div>
-
-          <div class="example-card wide">
-            <h3>Desktop window snapping</h3>
-            <p>Drag the title bar to the left, right, or top preview zone, then release.</p>
-            <div class="desktop" id="desktop">
-              <div class="desktop-zone" data-zone="left"></div>
-              <div class="desktop-zone" data-zone="right"></div>
-              <div class="desktop-zone" data-zone="top"></div>
-              <div class="desktop-window" id="desktop-window">
-                <div class="window-titlebar" id="window-titlebar" tabindex="0"
-                  role="button" aria-describedby="desktop-status"
-                  aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp Escape"
-                  aria-label="Project board window. Use arrow keys to snap, or Escape to release.">
-                  <span>Project board</span><span aria-hidden="true">— □ ×</span>
-                </div>
-                <div class="window-body">Drag this window by its title bar.</div>
-              </div>
-            </div>
-            <div class="status" id="desktop-status" aria-live="polite">Window is free.</div>
+            <div class="status" id="align-status" aria-live="polite">Shape is free.</div>
           </div>
         </div>
       </div>
@@ -1032,12 +1056,8 @@
           panels[index].hidden = !selected;
         });
         if (moveFocus) tab.focus();
-        if (tab.id === 'tab-align') {
-          requestAnimationFrame(() => {
-            placeSnap(snapIndex);
-            constrainDesktopWindow();
-          });
-        }
+        if (tab.id === 'tab-edge') requestAnimationFrame(constrainDesktopWindow);
+        if (tab.id === 'tab-align') requestAnimationFrame(constrainAlignShape);
       }
 
       tabs.forEach((tab, index) => {
@@ -1362,120 +1382,116 @@
         play('tick', 0.55);
       });
 
-      // ---- Align: drag to snap ------------------------------------------
-      const snapStage = document.getElementById('snap-stage');
-      const snapItem = document.getElementById('snap-item');
-      const snapTargets = Array.from(document.querySelectorAll('.snap-target'));
-      const snapStatus = document.getElementById('snap-status');
-      let snapIndex = 0;
-      let snapDrag = null;
-
-      function placeSnap(index) {
-        const stageRect = snapStage.getBoundingClientRect();
-        const targetRect = snapTargets[index].getBoundingClientRect();
-        if (!stageRect.width || !targetRect.width) return;
-        snapItem.style.left = (targetRect.left - stageRect.left - snapStage.clientLeft +
-          (targetRect.width - snapItem.offsetWidth) / 2) + 'px';
-        snapItem.style.top = (targetRect.top - stageRect.top - snapStage.clientTop +
-          (targetRect.height - snapItem.offsetHeight) / 2) + 'px';
-        snapTargets.forEach((target, targetIndex) => {
-          target.classList.toggle('locked', targetIndex === index);
-          target.classList.remove('preview');
-        });
-      }
-
-      function nearestSnapTarget(itemCenterX, itemCenterY) {
-        let nearest = null;
-        let nearestDistance = Infinity;
-        snapTargets.forEach((target, index) => {
-          const rect = target.getBoundingClientRect();
-          const distance = Math.hypot(
-            itemCenterX - (rect.left + rect.width / 2),
-            itemCenterY - (rect.top + rect.height / 2)
-          );
-          if (distance < nearestDistance) {
-            nearest = index;
-            nearestDistance = distance;
-          }
-        });
-        return nearestDistance <= 100 ? nearest : null;
-      }
-
-      snapItem.addEventListener('pointerdown', (event) => {
-        if (event.button !== 0 || snapDrag) return;
-        const itemRect = snapItem.getBoundingClientRect();
-        snapDrag = {
-          pointerId: event.pointerId,
-          offsetX: event.clientX - itemRect.left,
-          offsetY: event.clientY - itemRect.top,
-          preview: null
-        };
-        snapItem.setPointerCapture(event.pointerId);
-        snapItem.classList.add('dragging');
+      const tickSlider = document.getElementById('tick-slider');
+      const tickSliderValue = document.getElementById('tick-slider-value');
+      const tickSliderStatus = document.getElementById('tick-slider-status');
+      let tickSliderDetent = tickSlider.value;
+      tickSlider.addEventListener('input', () => {
+        tickSliderValue.textContent = tickSlider.value + '%';
+        tickSliderStatus.textContent = 'At the ' + tickSlider.value + '% detent.';
+        if (tickSlider.value === tickSliderDetent) return;
+        tickSliderDetent = tickSlider.value;
+        play('tick', 0.6);
       });
 
-      snapItem.addEventListener('pointermove', (event) => {
-        if (!snapDrag || event.pointerId !== snapDrag.pointerId) return;
-        event.preventDefault();
-        const stageRect = snapStage.getBoundingClientRect();
-        const stageLeft = stageRect.left + snapStage.clientLeft;
-        const stageTop = stageRect.top + snapStage.clientTop;
-        const left = clamp(
-          event.clientX - stageLeft - snapDrag.offsetX,
-          0,
-          snapStage.clientWidth - snapItem.offsetWidth
-        );
-        const top = clamp(
-          event.clientY - stageTop - snapDrag.offsetY,
-          0,
-          snapStage.clientHeight - snapItem.offsetHeight
-        );
-        snapItem.style.left = left + 'px';
-        snapItem.style.top = top + 'px';
-        snapDrag.preview = nearestSnapTarget(
-          stageLeft + left + snapItem.offsetWidth / 2,
-          stageTop + top + snapItem.offsetHeight / 2
-        );
-        snapTargets.forEach((target, index) =>
-          target.classList.toggle('preview', index === snapDrag.preview && index !== snapIndex));
-      });
+      // ---- Align: canvas guides -----------------------------------------
+      const alignCanvas = document.getElementById('align-canvas');
+      const alignShape = document.getElementById('align-shape');
+      const alignGuideX = document.getElementById('align-guide-x');
+      const alignGuideY = document.getElementById('align-guide-y');
+      const alignStatus = document.getElementById('align-status');
+      const alignThreshold = 10;
+      let alignDrag = null;
+      let activeAlignGuides = '';
 
-      function finishSnapDrag(event, cancelled) {
-        if (!snapDrag || event.pointerId !== snapDrag.pointerId) return;
-        const next = cancelled ? null : snapDrag.preview;
-        if (snapItem.hasPointerCapture(event.pointerId)) snapItem.releasePointerCapture(event.pointerId);
-        snapDrag = null;
-        snapItem.classList.remove('dragging');
-        if (next !== null && next !== snapIndex) {
-          snapIndex = next;
-          placeSnap(snapIndex);
-          snapStatus.textContent = 'Locked to ' + snapTargets[snapIndex].dataset.snap + '.';
+      function setAlignGuides(xAligned, yAligned) {
+        const nextGuides = (xAligned ? 'x' : '') + (yAligned ? 'y' : '');
+        alignGuideX.classList.toggle('visible', xAligned);
+        alignGuideY.classList.toggle('visible', yAligned);
+        if (nextGuides && nextGuides !== activeAlignGuides) {
           play('align', 0.8);
-        } else {
-          placeSnap(snapIndex);
-          if (cancelled) snapStatus.textContent = 'Drag cancelled. Still locked to ' +
-            snapTargets[snapIndex].dataset.snap + '.';
+          alignStatus.textContent = xAligned && yAligned ? 'Aligned to the canvas center.' :
+            xAligned ? 'Aligned to the vertical center guide.' :
+            'Aligned to the horizontal center guide.';
+        } else if (!nextGuides && activeAlignGuides) {
+          alignStatus.textContent = 'Shape is free.';
         }
+        activeAlignGuides = nextGuides;
       }
 
-      snapItem.addEventListener('pointerup', (event) => finishSnapDrag(event, false));
-      snapItem.addEventListener('pointercancel', (event) => finishSnapDrag(event, true));
-      snapItem.addEventListener('keydown', (event) => {
-        let next = snapIndex;
-        if (event.key === 'ArrowLeft') next = clamp(snapIndex - 1, 0, snapTargets.length - 1);
-        else if (event.key === 'ArrowRight') next = clamp(snapIndex + 1, 0, snapTargets.length - 1);
-        else if (event.key === 'Home') next = 0;
-        else if (event.key === 'End') next = snapTargets.length - 1;
-        else return;
-        event.preventDefault();
-        if (event.repeat || next === snapIndex) return;
-        snapIndex = next;
-        placeSnap(snapIndex);
-        snapStatus.textContent = 'Locked to ' + snapTargets[snapIndex].dataset.snap + '.';
-        play('align', 0.8);
+      function moveAlignShape(left, top) {
+        const maxLeft = alignCanvas.clientWidth - alignShape.offsetWidth;
+        const maxTop = alignCanvas.clientHeight - alignShape.offsetHeight;
+        const centerLeft = maxLeft / 2;
+        const centerTop = maxTop / 2;
+        let nextLeft = clamp(left, 0, maxLeft);
+        let nextTop = clamp(top, 0, maxTop);
+        const xAligned = Math.abs(nextLeft - centerLeft) <= alignThreshold;
+        const yAligned = Math.abs(nextTop - centerTop) <= alignThreshold;
+        if (xAligned) nextLeft = centerLeft;
+        if (yAligned) nextTop = centerTop;
+        alignShape.style.left = nextLeft + 'px';
+        alignShape.style.top = nextTop + 'px';
+        setAlignGuides(xAligned, yAligned);
+      }
+
+      alignShape.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || alignDrag) return;
+        const shapeRect = alignShape.getBoundingClientRect();
+        alignDrag = {
+          pointerId: event.pointerId,
+          offsetX: event.clientX - shapeRect.left,
+          offsetY: event.clientY - shapeRect.top
+        };
+        alignShape.setPointerCapture(event.pointerId);
+        alignShape.classList.add('dragging');
       });
 
-      // ---- Align: desktop window snapping -------------------------------
+      alignShape.addEventListener('pointermove', (event) => {
+        if (!alignDrag || event.pointerId !== alignDrag.pointerId) return;
+        event.preventDefault();
+        const canvasRect = alignCanvas.getBoundingClientRect();
+        moveAlignShape(
+          event.clientX - canvasRect.left - alignCanvas.clientLeft - alignDrag.offsetX,
+          event.clientY - canvasRect.top - alignCanvas.clientTop - alignDrag.offsetY
+        );
+      });
+
+      function finishAlignDrag(event) {
+        if (!alignDrag || event.pointerId !== alignDrag.pointerId) return;
+        if (alignShape.hasPointerCapture(event.pointerId)) alignShape.releasePointerCapture(event.pointerId);
+        alignDrag = null;
+        alignShape.classList.remove('dragging');
+        setAlignGuides(false, false);
+      }
+
+      alignShape.addEventListener('pointerup', finishAlignDrag);
+      alignShape.addEventListener('pointercancel', finishAlignDrag);
+      alignShape.addEventListener('keydown', (event) => {
+        const delta = event.shiftKey ? 20 : 5;
+        let left = alignShape.offsetLeft;
+        let top = alignShape.offsetTop;
+        if (event.key === 'ArrowLeft') left -= delta;
+        else if (event.key === 'ArrowRight') left += delta;
+        else if (event.key === 'ArrowUp') top -= delta;
+        else if (event.key === 'ArrowDown') top += delta;
+        else if (event.key === 'Home') {
+          left = (alignCanvas.clientWidth - alignShape.offsetWidth) / 2;
+          top = (alignCanvas.clientHeight - alignShape.offsetHeight) / 2;
+        } else return;
+        event.preventDefault();
+        if (!event.repeat || event.key !== 'Home') moveAlignShape(left, top);
+      });
+
+      function constrainAlignShape() {
+        const maxLeft = Math.max(0, alignCanvas.clientWidth - alignShape.offsetWidth);
+        const maxTop = Math.max(0, alignCanvas.clientHeight - alignShape.offsetHeight);
+        alignShape.style.left = clamp(alignShape.offsetLeft, 0, maxLeft) + 'px';
+        alignShape.style.top = clamp(alignShape.offsetTop, 0, maxTop) + 'px';
+        setAlignGuides(false, false);
+      }
+
+      // ---- Edge: desktop window snapping --------------------------------
       const desktop = document.getElementById('desktop');
       const desktopWindow = document.getElementById('desktop-window');
       const titlebar = document.getElementById('window-titlebar');
@@ -1508,13 +1524,10 @@
         }
       }
 
-      function desktopZoneAt(clientX, clientY) {
-        const rect = desktop.getBoundingClientRect();
-        const x = clientX - rect.left - desktop.clientLeft;
-        const y = clientY - rect.top - desktop.clientTop;
-        if (y <= Math.min(58, desktop.clientHeight * 0.22)) return 'top';
-        if (x <= desktop.clientWidth * 0.22) return 'left';
-        if (x >= desktop.clientWidth * 0.78) return 'right';
+      function desktopContactZone(left, top, width) {
+        if (top <= 0) return 'top';
+        if (left <= 0) return 'left';
+        if (left + width >= desktop.clientWidth) return 'right';
         return null;
       }
 
@@ -1568,18 +1581,27 @@
         const desktopTop = desktopRect.top + desktop.clientTop;
         const width = desktopWindow.offsetWidth;
         const height = desktopWindow.offsetHeight;
-        desktopWindow.style.left = clamp(
+        const left = clamp(
           event.clientX - desktopLeft - windowDrag.offsetX,
           0,
           desktop.clientWidth - width
-        ) + 'px';
-        desktopWindow.style.top = clamp(
+        );
+        const top = clamp(
           event.clientY - desktopTop - windowDrag.offsetY,
           0,
           desktop.clientHeight - height
-        ) + 'px';
-        windowDrag.preview = desktopZoneAt(event.clientX, event.clientY);
+        );
+        desktopWindow.style.left = left + 'px';
+        desktopWindow.style.top = top + 'px';
+        const previousPreview = windowDrag.preview;
+        windowDrag.preview = desktopContactZone(left, top, width);
         setDesktopPreview(windowDrag.preview);
+        if (windowDrag.preview && windowDrag.preview !== previousPreview) {
+          desktopStatus.textContent = 'Window touched the ' + windowDrag.preview + ' edge.';
+          play('edge', 0.9);
+        } else if (!windowDrag.preview && previousPreview) {
+          desktopStatus.textContent = 'Window moved away from the edge.';
+        }
       });
 
       function finishWindowDrag(event, cancelled) {
@@ -1601,10 +1623,8 @@
         }
 
         if (state.preview) {
-          const changed = state.preview !== desktopMode;
           desktopMode = state.preview;
           applyDesktopSnap(desktopMode, true);
-          if (changed) play('align', 0.9);
         } else {
           desktopMode = 'free';
           desktopStatus.textContent = 'Window is free.';
@@ -1623,7 +1643,7 @@
         if (event.repeat || target === desktopMode) return;
         desktopMode = target;
         applyDesktopSnap(target, true);
-        if (target !== 'free') play('align', 0.9);
+        if (target !== 'free') play('edge', 0.9);
       });
 
       function constrainDesktopWindow() {
@@ -1640,8 +1660,7 @@
       }
 
       window.addEventListener('resize', () => {
-        if (document.getElementById('panel-align').hidden) return;
-        placeSnap(snapIndex);
+        constrainAlignShape();
         constrainDesktopWindow();
       });
 
