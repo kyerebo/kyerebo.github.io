@@ -301,7 +301,7 @@
 
     .tabs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 0.35rem;
       margin-bottom: 1rem;
       padding: 0.35rem;
@@ -751,7 +751,7 @@
     <h2>navigator.playHaptics()</h2>
     <p class="lead">
       Each button calls <code>navigator.playHaptics(effect, intensity)</code>
-      with one of the four predefined effects. Requires sticky user activation —
+      with one of the six predefined effects. Requires sticky user activation —
       a click satisfies that. If the last input device isn't haptics-capable,
       nothing plays (and, by design, the API returns <code>undefined</code> either way).
     </p>
@@ -773,6 +773,14 @@
         <button class="effect-btn" data-effect="align">
           <span class="effect-name">align</span>
           <span class="effect-desc">Crisp confirmation of locking into place.</span>
+        </button>
+        <button class="effect-btn" data-effect="success">
+          <span class="effect-name">success</span>
+          <span class="effect-desc">Confirmation that an action completed successfully.</span>
+        </button>
+        <button class="effect-btn" data-effect="error">
+          <span class="effect-name">error</span>
+          <span class="effect-desc">Confirmation that an action failed or was rejected.</span>
         </button>
       </div>
 
@@ -805,6 +813,10 @@
         aria-controls="panel-tick" tabindex="-1">Tick</button>
       <button class="tab" id="tab-align" role="tab" aria-selected="false"
         aria-controls="panel-align" tabindex="-1">Align</button>
+      <button class="tab" id="tab-success" role="tab" aria-selected="false"
+        aria-controls="panel-success" tabindex="-1">Success</button>
+      <button class="tab" id="tab-error" role="tab" aria-selected="false"
+        aria-controls="panel-error" tabindex="-1">Error</button>
     </div>
 
     <div class="tab-panel" id="panel-hint" role="tabpanel" aria-labelledby="tab-hint">
@@ -841,18 +853,6 @@
     <div class="tab-panel" id="panel-edge" role="tabpanel" aria-labelledby="tab-edge" hidden>
       <div class="panel">
         <div class="example-grid">
-          <div class="example-card">
-            <h3>Validation boundary</h3>
-            <p>Every failed submission announces the error and triggers Edge.</p>
-            <form class="validation-form" id="validation-form" novalidate>
-              <label for="edge-email">Work email</label>
-              <input class="field" id="edge-email" type="email" required
-                aria-describedby="validation-status" placeholder="you@example.com">
-              <button class="btn-secondary" type="submit">Continue</button>
-            </form>
-            <div class="status" id="validation-status" aria-live="assertive"></div>
-          </div>
-
           <div class="example-card">
             <h3>Pull to refresh</h3>
             <p>Pull down until the circular indicator fills and crosses the limit.</p>
@@ -969,6 +969,37 @@
         </div>
       </div>
     </div>
+
+    <div class="tab-panel" id="panel-success" role="tabpanel" aria-labelledby="tab-success" hidden>
+      <div class="panel">
+        <div class="example-grid">
+          <div class="example-card wide">
+            <h3>Save settings</h3>
+            <p>Completing the save triggers Success.</p>
+            <button class="btn-secondary" id="save-settings" type="button">Save settings</button>
+            <div class="status" id="save-status" aria-live="polite">No changes saved yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-error" role="tabpanel" aria-labelledby="tab-error" hidden>
+      <div class="panel">
+        <div class="example-grid">
+          <div class="example-card wide">
+            <h3>Form validation</h3>
+            <p>A failed submission announces the problem and triggers Error.</p>
+            <form class="validation-form" id="validation-form" novalidate>
+              <label for="error-email">Work email</label>
+              <input class="field" id="error-email" type="email" required
+                aria-describedby="validation-status" placeholder="you@example.com">
+              <button class="btn-secondary" type="submit">Continue</button>
+            </form>
+            <div class="status" id="validation-status" aria-live="assertive"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <footer>
@@ -980,7 +1011,7 @@
     (function () {
       'use strict';
 
-      const EFFECTS = ['hint', 'edge', 'tick', 'align'];
+      const EFFECTS = ['hint', 'edge', 'tick', 'align', 'success', 'error'];
       const supported = typeof navigator.playHaptics === 'function';
 
       // ---- Support banner ------------------------------------------------
@@ -1173,26 +1204,33 @@
         resetFilePosition('Not filed.');
       });
 
-      // ---- Edge: validation ---------------------------------------------
+      // ---- Success example ----------------------------------------------
+      const saveStatus = document.getElementById('save-status');
+      document.getElementById('save-settings').addEventListener('click', () => {
+        saveStatus.textContent = 'Settings saved successfully.';
+        play('success', 0.8);
+      });
+
+      // ---- Error: validation --------------------------------------------
       const validationForm = document.getElementById('validation-form');
-      const edgeEmail = document.getElementById('edge-email');
+      const errorEmail = document.getElementById('error-email');
       const validationStatus = document.getElementById('validation-status');
       validationForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        const valid = edgeEmail.checkValidity();
-        edgeEmail.setAttribute('aria-invalid', String(!valid));
+        const valid = errorEmail.checkValidity();
+        errorEmail.setAttribute('aria-invalid', String(!valid));
         if (!valid) {
           validationStatus.className = 'status error';
           validationStatus.textContent = 'Enter a valid work email before continuing.';
-          play('edge', 0.9);
-          edgeEmail.focus();
+          play('error', 0.9);
+          errorEmail.focus();
         } else {
           validationStatus.className = 'status';
           validationStatus.textContent = 'Email accepted.';
         }
       });
-      edgeEmail.addEventListener('input', () => {
-        edgeEmail.removeAttribute('aria-invalid');
+      errorEmail.addEventListener('input', () => {
+        errorEmail.removeAttribute('aria-invalid');
         validationStatus.textContent = '';
       });
 
