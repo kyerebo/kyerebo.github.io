@@ -186,6 +186,13 @@
       animation: accent-color-cycle 3s ease-in-out infinite alternate;
     }
 
+    .accent-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
     @keyframes accent-color-cycle {
       from {
         background-color: var(--animation-color);
@@ -461,6 +468,34 @@
     </div>
   </section>
 
+  <!-- ============================================================
+       SECTION 4 — AccentColor in canvas
+       ============================================================ -->
+  <section>
+    <p class="section-label">Canvas painting</p>
+    <h2>Section 4: <code>AccentColor</code> in <code>&lt;canvas&gt;</code></h2>
+    <p class="lead">
+      Pick an accent color below to repaint the canvas. Its background is drawn
+      with <code>AccentColor</code>, and its label is drawn with
+      <code>AccentColorText</code>.
+    </p>
+
+    <div class="panel" id="section4" style="accent-color: #4169E1;">
+      <canvas
+        class="accent-canvas"
+        id="accent-canvas"
+        width="640"
+        height="180"
+        role="img"
+        aria-label="Canvas painted with AccentColor and AccentColorText"
+      >
+        This canvas uses AccentColor for its background and AccentColorText for its text.
+      </canvas>
+
+      <div class="swatch-grid" id="canvas-swatch-grid"></div>
+    </div>
+  </section>
+
   <script>
     // Eight accent-color options — a mix of light and dark to exercise
     // AccentColorText's automatic contrast selection.
@@ -542,6 +577,47 @@
 
     animationColor.addEventListener('input', event => updateAnimationColor(event.target.value));
     updateAnimationColor(animationColor.value);
+
+    const section4 = document.getElementById('section4');
+    const accentCanvas = document.getElementById('accent-canvas');
+    const canvasGrid = document.getElementById('canvas-swatch-grid');
+    const canvasContext = accentCanvas.getContext('2d');
+
+    function drawAccentCanvas() {
+      canvasContext.fillStyle = 'AccentColor';
+      canvasContext.fillRect(0, 0, accentCanvas.width, accentCanvas.height);
+
+      canvasContext.fillStyle = 'AccentColorText';
+      canvasContext.font = '600 28px system-ui, sans-serif';
+      canvasContext.textAlign = 'center';
+      canvasContext.textBaseline = 'middle';
+      canvasContext.fillText(
+        'AccentColor + AccentColorText',
+        accentCanvas.width / 2,
+        accentCanvas.height / 2
+      );
+    }
+
+    function selectCanvasAccent(btn, value) {
+      section4.style.accentColor = value;
+      canvasGrid.querySelectorAll('.swatch-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      drawAccentCanvas();
+    }
+
+    ACCENT_COLORS.forEach((c, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'swatch-btn' + (i === 0 ? ' selected' : '');
+      btn.type = 'button';
+      btn.innerHTML =
+        `<span class="swatch-chip" style="background:${c.value}"></span>` +
+        `<span class="swatch-name">${c.value}</span>`;
+      btn.title = c.name;
+      btn.addEventListener('click', () => selectCanvasAccent(btn, c.value));
+      canvasGrid.appendChild(btn);
+    });
+
+    drawAccentCanvas();
 
     function queryColor(elId, outId) {
       const el = document.getElementById(elId);
