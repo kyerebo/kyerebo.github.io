@@ -477,7 +477,8 @@
     <p class="lead">
       Pick an accent color below to repaint the canvas. Its background is drawn
       with <code>AccentColor</code>, and its label is drawn with
-      <code>AccentColorText</code>.
+      <code>AccentColorText</code>. Choose <code>auto</code> to draw with the
+      operating system's accent color.
     </p>
 
     <div class="panel" id="section4" style="accent-color: #4169E1;">
@@ -582,6 +583,10 @@
     const accentCanvas = document.getElementById('accent-canvas');
     const canvasGrid = document.getElementById('canvas-swatch-grid');
     const canvasContext = accentCanvas.getContext('2d');
+    const CANVAS_ACCENT_COLORS = [
+      ...ACCENT_COLORS,
+      { name: 'System accent', value: 'auto' },
+    ];
 
     function drawAccentCanvas() {
       canvasContext.fillStyle = 'AccentColor';
@@ -605,12 +610,14 @@
       drawAccentCanvas();
     }
 
-    ACCENT_COLORS.forEach((c, i) => {
+    CANVAS_ACCENT_COLORS.forEach((c, i) => {
       const btn = document.createElement('button');
+      const isAuto = c.value === 'auto';
       btn.className = 'swatch-btn' + (i === 0 ? ' selected' : '');
       btn.type = 'button';
       btn.innerHTML =
-        `<span class="swatch-chip" style="background:${c.value}"></span>` +
+        `<span class="swatch-chip${isAuto ? ' auto' : ''}"${isAuto ? '' : ` style="background:${c.value}"`}>` +
+        `${isAuto ? 'OS' : ''}</span>` +
         `<span class="swatch-name">${c.value}</span>`;
       btn.title = c.name;
       btn.addEventListener('click', () => selectCanvasAccent(btn, c.value));
