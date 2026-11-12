@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>LocalFolder iframe isolation</title></head>
+<body>
+  <p>Real same-origin iframe, with no sandbox restrictions.</p>
+  <pre id="result">Inspect this frame's OPFS in its own DevTools execution context.</pre>
+  <script type="module">
+    import { inspectIsolation } from './tests.js';
+    window.inspectLocalFolderIsolation = inspectIsolation;
+  </script>
+</body>
+</html>
