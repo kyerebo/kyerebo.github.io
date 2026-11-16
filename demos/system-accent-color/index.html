@@ -352,12 +352,15 @@
        is a color guaranteed to be legible when painted on top of it.</p>
     <p>When the <span class="kw">accent-color</span> property is left at its default
        (<span class="kw">auto</span>), these keywords resolve to the
-       <strong>operating system's accent color</strong> — the same tint used by
-       native checkboxes, radios, and range sliders. When
+       <strong>operating system's accent color</strong> — in Chromium, only when
+       the site is installed as a web application. When
        <span class="kw">accent-color</span> is set to any explicit value, the
        keywords resolve to <strong>that color</strong> instead, and
        <span class="kw">AccentColorText</span> automatically flips between a light
        or dark contrasting color to stay readable.</p>
+    <p><strong>Warning for Chromium:</strong> <code>accent-color: auto</code>
+       reflects the OS system accent color <strong>only when the site is installed
+       as a web application</strong>, not when viewed in a regular browser tab.</p>
   </div>
 
   <!-- ============================================================
@@ -401,10 +404,18 @@
     <p class="section-label">System default</p>
     <h2>Section 2: <code>accent-color: auto</code></h2>
     <p class="lead">
-      With <code>accent-color: auto</code>, the keywords resolve to your operating
-      system's accent color. Change your OS accent color and reload to see the
-      AccentColor box and native controls follow it.
+      With <code>accent-color: auto</code>, the keywords can resolve to your operating
+      system's accent color. In Chromium, install this site as a web application
+      first, then change your OS accent color and reload to see the AccentColor
+      box and native controls follow it.
     </p>
+
+    <div class="explainer">
+      <p><strong>Warning for Chromium:</strong> <code>accent-color: auto</code>
+         reflects the OS system accent color <strong>only when the site is installed
+         as a web application</strong>. A regular browser tab does not reflect
+         your OS accent color.</p>
+    </div>
 
     <div class="panel" style="accent-color: auto;">
       <div class="controls">
